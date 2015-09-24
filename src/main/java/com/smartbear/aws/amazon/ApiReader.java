@@ -44,6 +44,10 @@ public final class ApiReader {
         this.region = region;
     }
 
+    public String getRegion() {
+        return this.region;
+    }
+
     public boolean checkConnection() throws ApplicationException {
         JsonObject json = executeRequest(accessKey, secretKey, region, "GET", "/", "");
         System.out.println(json);

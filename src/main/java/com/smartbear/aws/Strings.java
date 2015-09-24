@@ -52,4 +52,10 @@ public final class Strings {
         public static final String GEN_VIRT_HOST = "Generate Virtual Host";
         public static final String NOTHING_SELECTED_WARNING = "Please select at least one API to import";
     }
+
+    public static final class ApiImporter {
+        public static final String IMPORT_PROGRESS = "Importing APIs...";
+        public static final String IMPORT_ERROR = "Failed to read API description for [%s] - [%s]\n";
+        public static final String IMPORT_ERROR_TAIL = "You can search and create issues for this plugin at https://github.com/SmartBear/ready-aws-plugin/issues.";
+    }
 }
