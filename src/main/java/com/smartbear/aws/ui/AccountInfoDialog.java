@@ -1,6 +1,5 @@
 package com.smartbear.aws.ui;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.support.StringUtils;
 import com.eviware.x.form.ValidationMessage;
 import com.eviware.x.form.XFormDialog;
@@ -9,9 +8,12 @@ import com.eviware.x.form.XFormFieldValidator;
 import com.eviware.x.form.support.ADialogBuilder;
 import com.eviware.x.form.support.AField;
 import com.eviware.x.form.support.AForm;
-import com.smartbear.aws.ApplicationException;
 import com.smartbear.aws.Strings;
 import com.smartbear.aws.amazon.ApiReader;
+import com.smartbear.aws.entity.ApiDescription;
+
+import java.util.Collections;
+import java.util.List;
 
 public class AccountInfoDialog implements AutoCloseable {
 
@@ -19,11 +21,13 @@ public class AccountInfoDialog implements AutoCloseable {
         public final String accessKey;
         public final String secretKey;
         public final String region;
+        public final List<ApiDescription> apis;
 
-        public Result(String accessKey, String secretKey, String region) {
+        public Result(String accessKey, String secretKey, String region, List<ApiDescription> apis) {
             this.accessKey = accessKey.trim();
             this.secretKey = secretKey.trim();
             this.region = region.trim();
+            this.apis = apis;
         }
     }
 
@@ -31,6 +35,7 @@ public class AccountInfoDialog implements AutoCloseable {
     private final XFormField accessKeyField;
     private final XFormField secretKeyField;
     private final XFormField regionField;
+    private ApiListLoader.Result loaderResult = null;
 
     public AccountInfoDialog() {
         this.dialog = ADialogBuilder.buildDialog(Form.class);
@@ -46,6 +51,16 @@ public class AccountInfoDialog implements AutoCloseable {
         this.accessKeyField.addFormFieldValidator(new FieldValidator("Access key"));
         this.secretKeyField.addFormFieldValidator(new FieldValidator("Secret key"));
         this.regionField.addFormFieldValidator(new FieldValidator("Region"));
+        this.regionField.addFormFieldValidator(new XFormFieldValidator() {
+            @Override
+            public ValidationMessage[] validateField(XFormField xFormField) {
+                ValidationMessage[] msg = downloadApiList();
+                if (msg.length > 0) {
+                    return msg;
+                }
+                return new ValidationMessage[0];
+            }
+        });
     }
 
     private class FieldValidator implements XFormFieldValidator {
@@ -60,39 +75,26 @@ public class AccountInfoDialog implements AutoCloseable {
             if (StringUtils.isNullOrEmpty(value)) {
                 return new ValidationMessage[]{new ValidationMessage(String.format(Strings.AccountInfoDialog.EMPTY_FIELD_WARNING, fieldName), xFormField)};
             }
-
-            ValidationMessage[] msg = checkConnection();
-            if (msg.length > 0) {
-                return msg;
-            }
             return new ValidationMessage[0];
         }
     }
 
-    private ValidationMessage[] checkConnection() {
+    private ValidationMessage[] downloadApiList() {
         Result res = buildResult();
         if (!StringUtils.isNullOrEmpty(res.accessKey) && !StringUtils.isNullOrEmpty(res.secretKey) && !StringUtils.isNullOrEmpty(res.region)) {
             ApiReader reader = new ApiReader(res.accessKey, res.secretKey, res.region);
-            boolean success = false;
-            try {
-                success = reader.checkConnection();
-                if (!success) {
-                    //TODO: message
-                    return new ValidationMessage[] { new ValidationMessage("Can't connect to AWS", accessKeyField) };
-                }
-            } catch (ApplicationException ex) {
-                SoapUI.logError(ex);
-                //TODO: message
-                return new ValidationMessage[] { new ValidationMessage(ex.getMessage(), accessKeyField) };
+            loaderResult = ApiListLoader.downloadList(reader);
+            if (StringUtils.hasContent(loaderResult.errors)) {
+                return new ValidationMessage[] { new ValidationMessage(loaderResult.errors, accessKeyField) };
             }
         }
         return new ValidationMessage[0];
     }
 
     private Result buildResult() {
-        return new Result(accessKeyField.getValue(), secretKeyField.getValue(), regionField.getValue());
+        List<ApiDescription> apis = loaderResult == null ? Collections.<ApiDescription>emptyList() : loaderResult.apis;
+        return new Result(accessKeyField.getValue(), secretKeyField.getValue(), regionField.getValue(), apis);
     }
-
 
     public Result show() {
         return dialog.show() ? buildResult() : null;

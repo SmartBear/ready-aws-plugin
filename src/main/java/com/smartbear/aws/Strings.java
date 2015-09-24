@@ -25,6 +25,7 @@ public final class Strings {
         public static final String UNAVAILABLE_DATA = "No data available at the \"%s\" location." + REFERENCE_TO_ISSUES;
         public static final String INVALID_JSON_RESPONSE = "Can't parse JSON of the response of the request to the \"%s\" location." + REFERENCE_TO_ISSUES;
         public static final String UNEXPECTED_RESPONSE_FORMAT = "Unexpected response format of the JSON for the %s." + REFERENCE_TO_ISSUES;
+        public static final String UNABLE_CONNECT = "Unable to to connect to AWS REST API";
     }
 
     public static final class AccountInfoDialog {
@@ -57,5 +58,9 @@ public final class Strings {
         public static final String IMPORT_PROGRESS = "Importing APIs...";
         public static final String IMPORT_ERROR = "Failed to read API description for [%s] - [%s]\n";
         public static final String IMPORT_ERROR_TAIL = "You can search and create issues for this plugin at https://github.com/SmartBear/ready-aws-plugin/issues.";
+    }
+
+    public static final class ApiListLoader {
+        public static final String LOAD_PROGRESS = "Reading APIs...";
     }
 }
