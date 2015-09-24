@@ -169,9 +169,9 @@ public final class ApiReader {
             URL url = new URL(urlString);
             connection = url.openConnection();
         } catch (MalformedURLException e) {
-            throw new ApplicationException(Strings.Error.MALFORMED_URL, e);
+            throw new ApplicationException(String.format(Strings.Error.MALFORMED_URL, urlString), e);
         } catch (IOException e) {
-            throw new ApplicationException(Strings.Error.UNABLE_CREATE_CONNECTION, e);
+            throw new ApplicationException(String.format(Strings.Error.UNABLE_CREATE_CONNECTION, urlString), e);
         }
 
         connection.setDoInput(true);
