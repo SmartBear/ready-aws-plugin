@@ -25,7 +25,8 @@ public final class Strings {
         public static final String UNAVAILABLE_DATA = "No data available at the \"%s\" location." + REFERENCE_TO_ISSUES;
         public static final String INVALID_JSON_RESPONSE = "Can't parse JSON of the response of the request to the \"%s\" location." + REFERENCE_TO_ISSUES;
         public static final String UNEXPECTED_RESPONSE_FORMAT = "Unexpected response format of the JSON for the %s." + REFERENCE_TO_ISSUES;
-        public static final String UNABLE_CONNECT = "Unable to to connect to AWS REST API";
+        public static final String UNABLE_CONNECT = "Unable to connect to AWS REST API";
+        public static final String UNABLE_SET_REQEST_BODY = "Unable to set request body";
     }
 
     public static final class AccountInfoDialog {

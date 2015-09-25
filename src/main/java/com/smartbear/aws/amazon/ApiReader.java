@@ -18,6 +18,7 @@ import javax.json.stream.JsonParsingException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -162,8 +163,12 @@ public final class ApiReader {
     }
 
     private static JsonObject executeRequest(String accessKey, String secretKey, String region, String method, String path, String query) throws ApplicationException {
+        return executeRequest(accessKey, secretKey, region, method, path, query, "");
+    }
+
+    private static JsonObject executeRequest(String accessKey, String secretKey, String region, String method, String path, String query, String body) throws ApplicationException {
         SignatureBuilder builder = new SignatureBuilder(accessKey, secretKey, region);
-        String authHeader = builder.buildAuthHeader(method, path, query, "");
+        String authHeader = builder.buildAuthHeader(method, path, query, body);
         String urlString = "https://" + builder.getHost() + path + (StringUtils.isNullOrEmpty(query) ? "" : "?" + query);
 
         URLConnection connection = null;
@@ -177,13 +182,25 @@ public final class ApiReader {
         }
 
         connection.setDoInput(true);
+        if (StringUtils.hasContent(body)) {
+            connection.setDoOutput(true);
+        }
         connection.setRequestProperty("Content-Type", "application/x-amz-json-1.0");
         connection.setRequestProperty("X-Amz-Date", builder.getAmzDate());
         connection.setRequestProperty("Authorization", authHeader);
+
         try {
             connection.connect();
         } catch (IOException e) {
             throw new ApplicationException(String.format(Strings.Error.UNAVAILABLE_HOST, urlString), e);
+        }
+
+        if (StringUtils.hasContent(body)) {
+            try (OutputStream output = connection.getOutputStream()) {
+                output.write(body.getBytes("UTF-8"));
+            } catch (IOException ex) {
+                throw new ApplicationException(Strings.Error.UNABLE_SET_REQEST_BODY, ex);
+            }
         }
 
         Reader reader;
