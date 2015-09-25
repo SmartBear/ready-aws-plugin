@@ -13,7 +13,9 @@ import com.smartbear.aws.amazon.ApiReader;
 import com.smartbear.aws.entity.ApiDescription;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AccountInfoDialog implements AutoCloseable {
 
@@ -31,6 +33,19 @@ public class AccountInfoDialog implements AutoCloseable {
         }
     }
 
+    //map of the all available regions, https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/?nc1=h_ls
+    private static Map<String, String> regions = new HashMap<String, String>() {{
+        put("US East (N. Virginia)", "us-east-1");
+        put("US West (Oregon)", "us-west-2");
+        put("US West (N. California)", "us-west-1");
+        put("South America (Sao Paulo)", "sa-east-1");
+        put("EU (Ireland)", "eu-west-1");
+        put("EU (Frankfurt)", "eu-central-1");
+        put("Asia Pacific (Tokyo)", "ap-northeast-1");
+        put("Asia Pacific (Singapore)", "ap-southeast-1");
+        put("Asia Pacific (Sydney)", "ap-southeast-2");
+    }};
+
     private final XFormDialog dialog;
     private final XFormField accessKeyField;
     private final XFormField secretKeyField;
@@ -46,7 +61,6 @@ public class AccountInfoDialog implements AutoCloseable {
         //TODO: remove before releasing
         this.accessKeyField.setValue("AKIAJGQ45ZF4SNFMH5XA");
         this.secretKeyField.setValue("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");
-        this.regionField.setValue("us-east-1");
 
         this.accessKeyField.addFormFieldValidator(new FieldValidator("Access key"));
         this.secretKeyField.addFormFieldValidator(new FieldValidator("Secret key"));
@@ -87,13 +101,16 @@ public class AccountInfoDialog implements AutoCloseable {
             if (StringUtils.hasContent(loaderResult.errors)) {
                 return new ValidationMessage[] { new ValidationMessage(loaderResult.errors, accessKeyField) };
             }
+            if (loaderResult.apis.size() == 0) {
+                return new ValidationMessage[] { new ValidationMessage(Strings.Error.INVALID_REGION, regionField) };
+            }
         }
         return new ValidationMessage[0];
     }
 
     private Result buildResult() {
         List<ApiDescription> apis = loaderResult == null ? Collections.<ApiDescription>emptyList() : loaderResult.apis;
-        return new Result(accessKeyField.getValue(), secretKeyField.getValue(), regionField.getValue(), apis);
+        return new Result(accessKeyField.getValue(), secretKeyField.getValue(), regions.get(regionField.getValue()), apis);
     }
 
     public Result show() {
@@ -113,7 +130,9 @@ public class AccountInfoDialog implements AutoCloseable {
         @AField(name = Strings.AccountInfoDialog.SECRET_KEY_LABEL, description = Strings.AccountInfoDialog.SECRET_KEY_DESCRIPTION, type = AField.AFieldType.STRING)
         public final static String SECRET_KEY = Strings.AccountInfoDialog.SECRET_KEY_LABEL;
 
-        @AField(name = Strings.AccountInfoDialog.REGION_LABEL, description = Strings.AccountInfoDialog.REGION_DESCRIPTION, type = AField.AFieldType.STRING)
+        //see available regions at the http://docs.aws.amazon.com/general/latest/gr/rande.html
+        @AField(name = Strings.AccountInfoDialog.REGION_LABEL, description = Strings.AccountInfoDialog.REGION_DESCRIPTION, type = AField.AFieldType.COMBOBOX,
+                values = {"US East (N. Virginia)", "US West (Oregon)", "EU (Ireland)"}, defaultValue = "US East (N. Virginia)")
         public final static String REGION = Strings.AccountInfoDialog.REGION_LABEL;
     }
 }
