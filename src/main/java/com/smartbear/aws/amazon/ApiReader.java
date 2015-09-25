@@ -22,8 +22,6 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -165,7 +163,7 @@ public final class ApiReader {
 
     private static JsonObject executeRequest(String accessKey, String secretKey, String region, String method, String path, String query) throws ApplicationException {
         SignatureBuilder builder = new SignatureBuilder(accessKey, secretKey, region);
-        String authHeader = builder.buildAuthHeader(method, path, query);
+        String authHeader = builder.buildAuthHeader(method, path, query, "");
         String urlString = "https://" + builder.getHost() + path + (StringUtils.isNullOrEmpty(query) ? "" : "?" + query);
 
         URLConnection connection = null;

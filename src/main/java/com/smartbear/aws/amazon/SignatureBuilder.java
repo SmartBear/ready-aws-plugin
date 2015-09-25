@@ -51,11 +51,11 @@ public final class SignatureBuilder {
         return this.host;
     }
 
-    public String buildAuthHeader(String method, String uri, String query) throws ApplicationException {
+    public String buildAuthHeader(String method, String uri, String query, String body) throws ApplicationException {
         try {
             byte[] signingKeyBytes = this.getSignatureKey();
 
-            String payloadHash = sha256("");
+            String payloadHash = sha256(body);
 
             String canonicalUri = uri;
             String canonicalQuerystring = query;
