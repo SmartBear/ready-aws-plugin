@@ -1,5 +1,6 @@
 package com.smartbear.aws.ui;
 
+import com.eviware.soapui.support.StringUtils;
 import com.eviware.x.form.ValidationMessage;
 import com.eviware.x.form.XFormDialog;
 import com.eviware.x.form.XFormField;
@@ -30,8 +31,8 @@ public class ApiSelectorDialog implements AutoCloseable {
     private final List<ApiDescription> apis;
     private final JTable apiTable;
 
-    public ApiSelectorDialog(List<ApiDescription> apiList) {
-        this.dialog = ADialogBuilder.buildDialog(Form.class);
+    public ApiSelectorDialog(List<ApiDescription> apiList, boolean newProjectMode) {
+        this.dialog = ADialogBuilder.buildDialog(newProjectMode ? NewProjectForm.class : Form.class);
         this.apis = apiList;
         this.apiTable = new JTable(new ApiTableModel(this.apis));
 
@@ -64,6 +65,20 @@ public class ApiSelectorDialog implements AutoCloseable {
                 }
             }
         });
+
+        XFormField projectName = this.dialog.getFormField(NewProjectForm.PROJECT_NAME);
+        if (projectName != null) {
+            projectName.addFormFieldValidator(new XFormFieldValidator() {
+                @Override
+                public ValidationMessage[] validateField(XFormField xFormField) {
+                    final String value = xFormField.getValue().trim();
+                    if (StringUtils.isNullOrEmpty(value)) {
+                        return new ValidationMessage[]{new ValidationMessage(String.format(Strings.AccountInfoDialog.EMPTY_FIELD_WARNING, "Project Name"), xFormField)};
+                    }
+                    return new ValidationMessage[0];
+                }
+            });
+        }
     }
 
     @Override
@@ -76,15 +91,15 @@ public class ApiSelectorDialog implements AutoCloseable {
     }
 
     public class Result {
-        //public final String projectName;
+        public final String projectName;
         public final List<ApiDescription> selectedAPIs;
         public final Set<Service> entities = EnumSet.noneOf(Service.class);
 
         public Result() {
             selectedAPIs = getSelected();
 
-            //XFormField name = dialog.getFormField(NewProjectForm.PROJECT_NAME);
-            //projectName = name != null ? name.getValue() : null;
+            XFormField name = dialog.getFormField(NewProjectForm.PROJECT_NAME);
+            projectName = name != null ? name.getValue() : null;
 
             if (dialog.getBooleanValue(Form.TEST_SUITE)) {
                 entities.add(Service.TEST_SUITE);
@@ -136,5 +151,14 @@ public class ApiSelectorDialog implements AutoCloseable {
 
         @AField(name = "###GenerateVirt", description = Strings.SelectApiDialog.GEN_VIRT_HOST, type = AField.AFieldType.BOOLEAN)
         public final static String VIRT = "###GenerateVirt";
+    }
+
+    @AForm(name = Strings.SelectApiDialog.CAPTION, description = Strings.SelectApiDialog.DESCRIPTION)
+    public interface NewProjectForm extends Form {
+        @AField(name = Strings.SelectApiDialog.PROJECT_LABEL, description = Strings.SelectApiDialog.PROJECT_DESCRIPTION, type = AField.AFieldType.STRING)
+        public final static String PROJECT_NAME = Strings.SelectApiDialog.PROJECT_LABEL;
+
+        @AField(description = "", type = AField.AFieldType.SEPARATOR)
+        public final static String SEPERATOR2 = "Separator2";
     }
 }

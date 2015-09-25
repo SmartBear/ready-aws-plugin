@@ -1,13 +1,14 @@
 package com.smartbear.aws.action;
 
+import com.eviware.soapui.SoapUI;
+import com.eviware.soapui.impl.WorkspaceImpl;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
-import com.eviware.soapui.plugins.ActionConfiguration;
+import com.eviware.soapui.plugins.auto.PluginImportMethod;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.soapui.support.action.support.AbstractSoapUIAction;
-import com.smartbear.ActionGroups;
-import com.smartbear.aws.amazon.ApiReader;
 import com.smartbear.aws.Strings;
+import com.smartbear.aws.amazon.ApiReader;
 import com.smartbear.aws.ui.AccountInfoDialog;
 import com.smartbear.aws.ui.ApiImporter;
 import com.smartbear.aws.ui.ApiSelectorDialog;
@@ -15,14 +16,14 @@ import com.smartbear.rapisupport.ServiceFactory;
 
 import java.util.List;
 
-@ActionConfiguration(actionGroup = ActionGroups.OPEN_PROJECT_ACTIONS, separatorBefore = true)
-public class AddApiAction extends AbstractSoapUIAction<WsdlProject> {
-    public AddApiAction() {
-        super(Strings.AddApiAction.NAME, Strings.AddApiAction.DESCRIPTION);
+@PluginImportMethod(label = Strings.NewProjectAction.ACTION_CAPTION)
+public class NewProjectAction extends AbstractSoapUIAction<WorkspaceImpl> {
+    public NewProjectAction() {
+        super(Strings.NewProjectAction.NAME, Strings.NewProjectAction.DESCRIPTION);
     }
 
     @Override
-    public void perform(WsdlProject wsdlProject, Object o) {
+    public void perform(WorkspaceImpl workspace, Object o) {
         AccountInfoDialog.Result accountInfo = null;
         try (AccountInfoDialog dlg = new AccountInfoDialog()) {
             accountInfo = dlg.show();
@@ -32,11 +33,24 @@ public class AddApiAction extends AbstractSoapUIAction<WsdlProject> {
         }
 
         ApiSelectorDialog.Result selectedApis = null;
-        try (ApiSelectorDialog dlg = new ApiSelectorDialog(accountInfo.apis, false)) {
+        try (ApiSelectorDialog dlg = new ApiSelectorDialog(accountInfo.apis, true)) {
             selectedApis = dlg.show();
         }
 
         if (selectedApis == null || selectedApis.selectedAPIs.size() == 0) {
+            return;
+        }
+
+        WsdlProject wsdlProject;
+        try {
+            wsdlProject = workspace.createProject(selectedApis.projectName, null);
+        } catch (Exception e) {
+            SoapUI.logError(e);
+            UISupport.showErrorMessage(String.format(Strings.NewProjectAction.UNABLE_CREATE_ERROR, e.getClass().getName(), e.getMessage()));
+            return;
+        }
+
+        if (wsdlProject == null) {
             return;
         }
 

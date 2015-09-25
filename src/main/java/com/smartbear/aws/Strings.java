@@ -15,6 +15,13 @@ public final class Strings {
         public static final String DESCRIPTION = "Imports APIs from an Amazon Web Service API Gateway";
     }
 
+    public static final class NewProjectAction {
+        public static final String NAME = "Create Project From AWS API Gateway";
+        public static final String DESCRIPTION = "Creates a new project for APIs imported from AWS API Gateway";
+        public static final String UNABLE_CREATE_ERROR = "Failed to create the project due to %s exception with \"%s\" message";
+        public static final String ACTION_CAPTION = "AWS API Gateway";
+    }
+
     public static final class Error {
         public static final String INVALID_KEY = "Unable to initialize the encryption algorithm.";
         public static final String NO_SUCH_ALGORITHM = "Required encryption algorithm isn't available.";
@@ -43,6 +50,10 @@ public final class Strings {
     }
 
     public static final class SelectApiDialog {
+        public static final String PROJECT_LABEL = "Project Name";
+        public static final String PROJECT_DESCRIPTION = "Name of the project";
+        public static final String EMPTY_PROJECT_WARNING = "Please enter project name";
+
         public static final String CAPTION = "Select APIs to Import";
         public static final String DESCRIPTION = "Please select APIs you would like to import into the project from the list below";
         public static final String NAME_LABEL = "API Name";
