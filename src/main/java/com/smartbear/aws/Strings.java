@@ -34,6 +34,7 @@ public final class Strings {
         public static final String UNEXPECTED_RESPONSE_FORMAT = "Unexpected response format of the JSON for the %s." + REFERENCE_TO_ISSUES;
         public static final String UNABLE_CONNECT = "Unable to connect to AWS REST API";
         public static final String UNABLE_SET_REQEST_BODY = "Unable to set request body";
+        public static final String INVALID_REGION = "List of the API is empty. Please select the region where were registered your APIs.";
     }
 
     public static final class AccountInfoDialog {
