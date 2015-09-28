@@ -14,15 +14,6 @@ import com.smartbear.aws.entity.Stage;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.stream.JsonParsingException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,14 +24,12 @@ public final class ApiReader {
     private final static String STAGES_PATH_TMPL = "/restapis/%s/stages";
     private final static String METHOD_PATH_TMPL = "/restapis/%s/resources/%s/methods/%s";
 
-    private final String accessKey;
-    private final String secretKey;
     private final String region;
+    private final HttpRequestExecutor requestExecutor;
 
     public ApiReader(String accessKey, String secretKey, String region) {
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
         this.region = region;
+        this.requestExecutor = new HttpRequestExecutor(accessKey, secretKey, region);
     }
 
     public String getRegion() {
@@ -48,14 +37,14 @@ public final class ApiReader {
     }
 
     public boolean checkConnection() throws ApplicationException {
-        JsonObject json = executeRequest(accessKey, secretKey, region, "GET", "/", "");
+        JsonObject json = requestExecutor.perform("GET", "/", "");
         System.out.println(json);
         return json != null;
     }
 
 
     public List<ApiDescription> getApis() throws ApplicationException {
-        JsonObject json = executeRequest(accessKey, secretKey, region, "GET", APIS_PATH, "");
+        JsonObject json = requestExecutor.perform("GET", APIS_PATH, "");
         JsonArray items = json.getJsonArray("item");
         if (items == null) {
             throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "API list"));
@@ -92,7 +81,7 @@ public final class ApiReader {
 
     private List<Stage> readStages(String apiId) throws ApplicationException {
         final String path = String.format(STAGES_PATH_TMPL, apiId);
-        JsonObject json = executeRequest(accessKey, secretKey, region, "GET", path, "");
+        JsonObject json = requestExecutor.perform("GET", path, "");
         JsonArray items = json.getJsonArray("item");
         if (items == null) {
             throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "API stages"));
@@ -108,7 +97,7 @@ public final class ApiReader {
 
     private List<HttpResourceDescription> readResourceDescriptions(String apiId) throws ApplicationException {
         final String path = String.format(RESOURCES_PATH_TMPL, apiId);
-        JsonObject json = executeRequest(accessKey, secretKey, region, "GET", path, "");
+        JsonObject json = requestExecutor.perform("GET", path, "");
 
         JsonArray items = json.getJsonArray("item");
         if (items == null) {
@@ -135,14 +124,12 @@ public final class ApiReader {
         List<HttpMethod> methods = new LinkedList<>();
         for (String name: resource.methodsNames) {
             String methodPath = String.format(METHOD_PATH_TMPL, apiId, resource.id, name);
-            JsonObject methodJson = executeRequest(accessKey, secretKey, region, "GET", methodPath, "");
+            JsonObject methodJson = requestExecutor.perform("GET", methodPath, "");
             HttpMethod method = new HttpMethod(methodJson);
             methods.add(method);
         }
         return methods;
     }
-
-
 
     private HttpResource buildResourcesTree(List<HttpResource> httpResources) {
         HttpResource root = null;
@@ -160,62 +147,5 @@ public final class ApiReader {
             }
         }
         return root;
-    }
-
-    private static JsonObject executeRequest(String accessKey, String secretKey, String region, String method, String path, String query) throws ApplicationException {
-        return executeRequest(accessKey, secretKey, region, method, path, query, "");
-    }
-
-    private static JsonObject executeRequest(String accessKey, String secretKey, String region, String method, String path, String query, String body) throws ApplicationException {
-        SignatureBuilder builder = new SignatureBuilder(accessKey, secretKey, region);
-        String authHeader = builder.buildAuthHeader(method, path, query, body);
-        String urlString = "https://" + builder.getHost() + path + (StringUtils.isNullOrEmpty(query) ? "" : "?" + query);
-
-        URLConnection connection = null;
-        try {
-            URL url = new URL(urlString);
-            connection = url.openConnection();
-        } catch (MalformedURLException e) {
-            throw new ApplicationException(String.format(Strings.Error.MALFORMED_URL, urlString), e);
-        } catch (IOException e) {
-            throw new ApplicationException(String.format(Strings.Error.UNABLE_CREATE_CONNECTION, urlString), e);
-        }
-
-        connection.setDoInput(true);
-        if (StringUtils.hasContent(body)) {
-            connection.setDoOutput(true);
-        }
-        connection.setRequestProperty("Content-Type", "application/x-amz-json-1.0");
-        connection.setRequestProperty("X-Amz-Date", builder.getAmzDate());
-        connection.setRequestProperty("Authorization", authHeader);
-
-        try {
-            connection.connect();
-        } catch (IOException e) {
-            throw new ApplicationException(String.format(Strings.Error.UNAVAILABLE_HOST, urlString), e);
-        }
-
-        if (StringUtils.hasContent(body)) {
-            try (OutputStream output = connection.getOutputStream()) {
-                output.write(body.getBytes("UTF-8"));
-            } catch (IOException ex) {
-                throw new ApplicationException(Strings.Error.UNABLE_SET_REQEST_BODY, ex);
-            }
-        }
-
-        Reader reader;
-        try {
-            reader = new InputStreamReader(connection.getInputStream());
-        } catch (FileNotFoundException e) {
-            throw new ApplicationException(String.format(Strings.Error.UNAVAILABLE_DATA, urlString), e);
-        } catch (IOException e) {
-            throw new ApplicationException("", e);
-        }
-
-        try (javax.json.JsonReader jsonReader = javax.json.Json.createReader(reader)) {
-            return jsonReader.readObject();
-        } catch (JsonParsingException e) {
-            throw new ApplicationException(String.format(Strings.Error.INVALID_JSON_RESPONSE, urlString), e);
-        }
     }
 }
