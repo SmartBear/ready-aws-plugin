@@ -15,9 +15,10 @@ public class HttpResource {
     public final List<HttpMethod> methods;
 
     public HttpResource(HttpResourceDescription description, List<HttpMethod> methods) {
+        String[] parts = description.path.split("/");
         this.id = description.id;
         this.parentId = description.parentId;
-        this.path = description.path;
+        this.path = parts.length > 0 ? parts[parts.length - 1] : "";
         this.name = description.name;
         this.methods = Collections.unmodifiableList(methods);
     }
