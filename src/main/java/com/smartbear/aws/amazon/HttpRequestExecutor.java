@@ -15,7 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class HttpRequestExecutor {
+public final class HttpRequestExecutor {
     private final SignatureBuilder signatureBuilder;
 
     public HttpRequestExecutor(String accessKey, String secretKey, String region) {
