@@ -15,6 +15,11 @@ public final class Strings {
         public static final String DESCRIPTION = "Imports APIs from an Amazon Web Service API Gateway";
     }
 
+    public static final class DeployApiAction {
+        public static final String NAME = "Deploy API to AWS API Gateway";
+        public static final String DESCRIPTION = "Deploy API to an Amazon Web Service API Gateway";
+    }
+
     public static final class NewProjectAction {
         public static final String NAME = "Create Project From AWS API Gateway";
         public static final String DESCRIPTION = "Creates a new project for APIs imported from AWS API Gateway";
@@ -71,6 +76,12 @@ public final class Strings {
         public static final String IMPORT_PROGRESS = "Importing APIs...";
         public static final String IMPORT_ERROR = "Failed to read API description for [%s] - [%s]\n";
         public static final String IMPORT_ERROR_TAIL = "You can search and create issues for this plugin at https://github.com/SmartBear/ready-aws-plugin/issues.";
+    }
+
+    public static final class ApiExporter {
+        public static final String EXPORT_PROGRESS = "Deploying API...";
+        public static final String EXPORT_ERROR = "Failed to deploy API for [%s] - [%s]\n";
+        public static final String EXPORT_ERROR_TAIL = ApiImporter.IMPORT_ERROR_TAIL;
     }
 
     public static final class ApiListLoader {
