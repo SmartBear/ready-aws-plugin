@@ -38,8 +38,7 @@ public final class ApiReader {
 
     public boolean checkConnection() throws ApplicationException {
         JsonObject json = requestExecutor.perform("GET", "/", "");
-        System.out.println(json);
-        return json != null;
+        return json.containsKey("self");
     }
 
 
