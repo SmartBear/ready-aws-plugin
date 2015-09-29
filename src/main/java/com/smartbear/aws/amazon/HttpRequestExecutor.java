@@ -1,5 +1,6 @@
 package com.smartbear.aws.amazon;
 
+import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.support.StringUtils;
 import com.smartbear.aws.ApplicationException;
 import com.smartbear.aws.Strings;
@@ -11,7 +12,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -80,6 +83,14 @@ public final class HttpRequestExecutor {
         connection.setRequestProperty("Content-Type", "application/x-amz-json-1.0");
         connection.setRequestProperty("X-Amz-Date", signatureBuilder.getAmzDate());
         connection.setRequestProperty("Authorization", authHeader);
+        HttpURLConnection httpConnection = (HttpURLConnection)connection;
+        if (httpConnection != null) {
+            try {
+                httpConnection.setRequestMethod(method);
+            } catch (ProtocolException ex) {
+                SoapUI.logError(ex);
+            }
+        }
 
         return connection;
     }
