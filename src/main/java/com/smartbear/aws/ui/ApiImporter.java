@@ -6,6 +6,7 @@ import com.eviware.soapui.impl.rest.RestResource;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.rest.RestServiceFactory;
 import com.eviware.soapui.impl.rest.support.RestParamProperty;
+import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.x.dialogs.Worker;
@@ -112,10 +113,21 @@ public class ApiImporter implements Worker {
     private void addResources(RestResource target, HttpResource source) {
         for (HttpResource child: source.resources) {
             RestResource restResource = target.addNewChildResource(child.name, child.path);
+
+            for (String resourceParam: child.params) {
+                RestParamProperty prop = restResource.addProperty(resourceParam);
+                prop.setStyle(RestParamsPropertyHolder.ParameterStyle.TEMPLATE);
+                prop.setRequired(true);
+            }
+
             for (HttpMethod method: child.methods) {
                 RestMethod restMethod = restResource.addNewMethod(method.name);
                 restMethod.setMethod(method.httpMethod);
                 for (MethodParameter param: method.parameters) {
+                    if (param.style == RestParamsPropertyHolder.ParameterStyle.TEMPLATE) {
+                        continue;
+                    }
+
                     RestParamProperty prop = restMethod.addProperty(param.name);
                     prop.setStyle(param.style);
                     prop.setRequired(param.isRequired);
