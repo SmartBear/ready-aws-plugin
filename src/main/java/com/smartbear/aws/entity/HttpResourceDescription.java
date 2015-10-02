@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class HttpResourceDescription {
+public final class HttpResourceDescription {
     public final String id;
     public final String parentId;
     public final String path;

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HttpResource {
+public final class HttpResource {
     public final String id;
     public final String parentId;
     public final String path;

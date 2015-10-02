@@ -3,7 +3,7 @@ package com.smartbear.aws.entity;
 import javax.json.JsonObject;
 import java.util.List;
 
-public class ApiDescription {
+public final class ApiDescription {
     public final String id;
     public final String name;
     public final String description;
