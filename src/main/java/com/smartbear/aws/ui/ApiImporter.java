@@ -2,6 +2,7 @@ package com.smartbear.aws.ui;
 
 import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.rest.RestMethod;
+import com.eviware.soapui.impl.rest.RestRepresentation;
 import com.eviware.soapui.impl.rest.RestResource;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.rest.RestServiceFactory;
@@ -20,8 +21,10 @@ import com.smartbear.aws.entity.ApiDescription;
 import com.smartbear.aws.entity.HttpMethod;
 import com.smartbear.aws.entity.HttpResource;
 import com.smartbear.aws.entity.MethodParameter;
+import com.smartbear.aws.entity.MethodResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ApiImporter implements Worker {
@@ -123,6 +126,7 @@ public class ApiImporter implements Worker {
             for (HttpMethod method: child.methods) {
                 RestMethod restMethod = restResource.addNewMethod(method.name);
                 restMethod.setMethod(method.httpMethod);
+                //add parameters
                 for (MethodParameter param: method.parameters) {
                     if (param.style == RestParamsPropertyHolder.ParameterStyle.TEMPLATE) {
                         continue;
@@ -131,6 +135,15 @@ public class ApiImporter implements Worker {
                     RestParamProperty prop = restMethod.addProperty(param.name);
                     prop.setStyle(param.style);
                     prop.setRequired(param.isRequired);
+                }
+
+                //add responses
+                for (MethodResponse resp: method.responses) {
+                    for (String mediaType: resp.mediaTypes) {
+                        RestRepresentation methodResponse = restMethod.addNewRepresentation(RestRepresentation.Type.RESPONSE);
+                        methodResponse.setMediaType(mediaType);
+                        methodResponse.setStatus(Arrays.asList(new String[] {resp.statusCode}));
+                    }
                 }
                 restMethod.addNewRequest("Request 1");
             }
