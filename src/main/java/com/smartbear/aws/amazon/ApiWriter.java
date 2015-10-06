@@ -3,10 +3,9 @@ package com.smartbear.aws.amazon;
 import com.eviware.soapui.impl.rest.RestMethod;
 import com.eviware.soapui.impl.rest.RestResource;
 import com.eviware.soapui.impl.rest.RestService;
-import com.eviware.soapui.impl.rest.support.RestParamProperty;
-import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder;
 import com.eviware.soapui.support.StringUtils;
 import com.smartbear.aws.ApplicationException;
+import com.smartbear.aws.DeploymentSetting;
 import com.smartbear.aws.Strings;
 
 import javax.json.Json;
@@ -18,12 +17,13 @@ public final class ApiWriter {
     private final static String APIS_PATH = "/restapis";
     private final static String RESOURCES_PATH_TMPL = "/restapis/%s/resources";
     private final static String RESOURCE_PATH_TMPL = RESOURCES_PATH_TMPL + "/%s";
-    private final static String METHOD_PATH = RESOURCE_PATH_TMPL + "/methods/%s";
 
     private final HttpRequestExecutor requestExecutor;
+    private final DeploymentSetting deploymentSetting;
 
-    public ApiWriter(String accessKey, String secretKey, String region) {
+    public ApiWriter(String accessKey, String secretKey, String region, DeploymentSetting deploymentSetting) {
         this.requestExecutor = new HttpRequestExecutor(accessKey, secretKey, region);
+        this.deploymentSetting = deploymentSetting;
     }
 
     public void perform(RestService restService) throws ApplicationException {
@@ -67,34 +67,13 @@ public final class ApiWriter {
         }
     }
 
-    public void createMethods(String apiId, String resourceId,  RestResource restResource) throws ApplicationException {
+    public void createMethods(String apiId, String resourceId, RestResource restResource) throws ApplicationException {
+        MethodWriter methodWriter = new MethodWriter(requestExecutor, deploymentSetting, apiId, resourceId);
+
         for (RestMethod method: restResource.getRestMethodList()) {
-            JsonObjectBuilder body = Json.createObjectBuilder();
-            body.add("authorizationType", "NONE");
-            body.add("apiKeyRequired", "false");
-            body.add("requestParameters", buildParamsJson(method));
-            JsonObject result = requestExecutor.perform("PUT", String.format(METHOD_PATH, apiId, resourceId, method.getMethod()), "", body.build().toString());
+            methodWriter.perform(method);
         }
     }
-
-    private JsonObject buildParamsJson(RestMethod method) {
-        JsonObjectBuilder params = Json.createObjectBuilder();
-        for (String key: method.getParams().keySet()) {
-            RestParamProperty param = method.getParams().getProperty(key);
-            String name = param.getName();
-            if (param.getStyle() == RestParamsPropertyHolder.ParameterStyle.HEADER) {
-                name = "method.request.header." + name;
-            } else if (param.getStyle() == RestParamsPropertyHolder.ParameterStyle.QUERY) {
-                name = "method.request.querystring." + name;
-            } else {
-                //TODO:
-                continue;
-            }
-            params.add(name, param.getRequired());
-        }
-        return params.build();
-    }
-
 
     public String getRootResourceId(String apiId) throws ApplicationException {
         final String path = String.format(RESOURCES_PATH_TMPL, apiId);

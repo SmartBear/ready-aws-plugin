@@ -4,6 +4,7 @@ import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.plugins.ActionConfiguration;
 import com.eviware.soapui.support.action.support.AbstractSoapUIAction;
 import com.smartbear.ActionGroups;
+import com.smartbear.aws.DeploymentSetting;
 import com.smartbear.aws.Strings;
 import com.smartbear.aws.amazon.ApiWriter;
 import com.smartbear.aws.ui.AccountInfoDialog;
@@ -25,7 +26,10 @@ public class DeployApiAction extends AbstractSoapUIAction<RestService> {
             return;
         }
 
-        ApiWriter writer = new ApiWriter(accountInfo.accessKey, accountInfo.secretKey, accountInfo.region);
+        //TODO: get DeploymentSetting from dialog
+        DeploymentSetting setting = DeploymentSetting.withoutIntegration();
+
+        ApiWriter writer = new ApiWriter(accountInfo.accessKey, accountInfo.secretKey, accountInfo.region, setting);
         ApiExporter.deployServise(writer, restService);
     }
 }
