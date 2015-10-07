@@ -108,7 +108,7 @@ public final class MethodWriter {
                 }
             }
         }
-        if (statuses.isEmpty()) {
+        if (deploymentSetting.proxyIntegration && statuses.isEmpty()) {
             statuses.add(deploymentSetting.defaultResponse);
         }
         return statuses;
