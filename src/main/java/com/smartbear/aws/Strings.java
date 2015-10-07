@@ -40,6 +40,13 @@ public final class Strings {
         public static final String UNABLE_CONNECT = "Unable to connect to AWS REST API";
         public static final String UNABLE_SET_REQEST_BODY = "Unable to set request body";
         public static final String INVALID_REGION = "List of the API is empty. Please select the region where were registered your APIs.";
+
+        public static final String ABSENT_ENDPOINT = "The RestService has no endpoints to select";
+        public static final String EMPTY_ENDPOINT = "Please select nonempty endpoint";
+        public static final String INVALID_ENDPOINT_FORMAT = "Selected endpoint has invalid URL format";
+        public static final String EMPTY_DEFAULT_RESPONSE = "Please enter default response";
+        public static final String INVALID_DEFAULT_RESPONSE = "Invalid value of the default response, please see available HTTP status codes in the RFC 7231";
+
     }
 
     public static final class AccountInfoDialog {
@@ -70,6 +77,18 @@ public final class Strings {
         public static final String GEN_SECUR_TEST = "Generate Security Test";
         public static final String GEN_VIRT_HOST = "Generate Virtual Host";
         public static final String NOTHING_SELECTED_WARNING = "Please select at least one API to import";
+    }
+
+    public static final class DeploymentSettingDialog {
+        public static final String NAME = "Deployment setting";
+        public static final String DESCRIPTION = "Enable 'Proxy integration' option to configure the AWS service as proxy";
+        public static final String PROXY_INTEGRATION_LABEL = "Proxy integration";
+        public static final String ENDPOINTS_LABEL = "Endpoints";
+        public static final String ENDPOINTS_DESCRIPTION = "Enter service endpoints";
+        public static final String DEFAULT_RESPONSE_LABEL = "Default response";
+        public static final String DEFAULT_RESPONSE_DESCRIPTION = "Enter default method response";
+        public static final String INTEGRATION_OPTIONS = "Integration options";
+
     }
 
     public static final class ApiImporter {
