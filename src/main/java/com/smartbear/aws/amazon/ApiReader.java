@@ -11,9 +11,11 @@ import com.smartbear.aws.entity.HttpMethod;
 import com.smartbear.aws.entity.HttpResource;
 import com.smartbear.aws.entity.HttpResourceDescription;
 import com.smartbear.aws.entity.Stage;
+import com.smartbear.aws.entity.StageMethod;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,6 +76,10 @@ public final class ApiReader {
         List<HttpResource> httpResources = readResources(description.id, resources);
         HttpResource treeRoot = buildResourcesTree(httpResources);
         //TODO: check treeRoot on null and trow exception
+        if (description.getStage() != null) {
+            List<StageMethod> apiSummary = readApiSummary(description.id, description.getStage().deploymentId);
+            //TODO: rebuild resources tree
+        }
 
         return new Api(description, treeRoot);
     }
@@ -92,6 +98,25 @@ public final class ApiReader {
                 return new Stage(value);
             }
         });
+    }
+
+    private List<StageMethod> readApiSummary(String apiId, String deploymentId) throws ApplicationException {
+        JsonObject deployment = requestExecutor.perform("GET", String.format("/restapis/%s/deployments/%s", apiId, deploymentId), "embed=apisummary");
+        List<StageMethod> result = new LinkedList<>();
+        JsonValue value = deployment.get("apiSummary");
+        if (value instanceof JsonObject) {
+            JsonObject apiSummary = (JsonObject)value;
+            for (String path: apiSummary.keySet()) {
+                JsonObject resource = apiSummary.getJsonObject(path);
+                for (String methodName: resource.keySet()) {
+                    JsonObject method = resource.getJsonObject(methodName);
+                    boolean apiKeyRequired = method.getBoolean("apiKeyRequired");
+                    String authorizationType = method.getString("authorizationType", "NONE");
+                    result.add(new StageMethod(methodName, path, apiKeyRequired, authorizationType));
+                }
+            }
+        }
+        return result;
     }
 
     private List<HttpResourceDescription> readResourceDescriptions(String apiId) throws ApplicationException {
