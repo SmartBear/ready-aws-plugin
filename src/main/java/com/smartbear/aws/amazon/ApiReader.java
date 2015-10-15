@@ -78,7 +78,8 @@ public final class ApiReader {
         //TODO: check treeRoot on null and trow exception
         if (description.getStage() != null) {
             List<StageMethod> apiSummary = readApiSummary(description.id, description.getStage().deploymentId);
-            //TODO: rebuild resources tree
+            StageTreeBuilder builder = new StageTreeBuilder(treeRoot, apiSummary);
+            treeRoot = builder.execute();
         }
 
         return new Api(description, treeRoot);

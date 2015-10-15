@@ -12,10 +12,11 @@ import java.util.List;
 public final class HttpMethod {
     public final String name;
     public final RestRequestInterface.HttpMethod httpMethod;
-    public final boolean apiKeyRequired;
-    public final String authorizationType;
     public final List<MethodParameter> parameters;
     public final List<MethodResponse> responses;
+
+    private boolean apiKeyRequired;
+    private String authorizationType;
 
     public HttpMethod(JsonObject src) {
         this.name = src.getString("httpMethod", "");
@@ -24,6 +25,31 @@ public final class HttpMethod {
         this.authorizationType = src.getString("authorizationType", "");
         this.parameters = Collections.unmodifiableList(getParameters(src.get("requestParameters")));
         this.responses = Collections.unmodifiableList(getResponses(src.get("methodResponses")));
+    }
+
+    public HttpMethod(StageMethod src) {
+        this.name = src.httpMethod.toString();
+        this.httpMethod = src.httpMethod;
+        this.apiKeyRequired = src.apiKeyRequired;
+        this.authorizationType = src.authorizationType;
+        this.parameters = Collections.unmodifiableList(Collections.<MethodParameter>emptyList());
+        this.responses = Collections.unmodifiableList(Collections.<MethodResponse>emptyList());
+    }
+
+    public boolean isApiKeyRequired() {
+        return apiKeyRequired;
+    }
+
+    public void setApiKeyRequired(boolean apiKeyRequired) {
+        this.apiKeyRequired = apiKeyRequired;
+    }
+
+    public String getAuthorizationType() {
+        return authorizationType;
+    }
+
+    public void setAuthorizationType(String authorizationType) {
+        this.authorizationType = authorizationType;
     }
 
     private List<MethodResponse> getResponses(JsonValue value) {

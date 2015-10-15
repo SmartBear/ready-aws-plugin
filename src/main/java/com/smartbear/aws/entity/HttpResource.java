@@ -11,19 +11,21 @@ import java.util.regex.Pattern;
 public final class HttpResource {
     public final String id;
     public final String parentId;
+    public final String fullPath;
     public final String path;
     public final String name;
     public final List<HttpResource> resources = new LinkedList<>();
-    public final List<HttpMethod> methods;
+    public final List<HttpMethod> methods = new LinkedList<>();
     public final List<String> params = new LinkedList<>();
 
     public HttpResource(HttpResourceDescription description, List<HttpMethod> methods) {
         String[] parts = description.path.split("/");
         this.id = description.id;
         this.parentId = description.parentId;
+        this.fullPath = description.path;
         this.path = parts.length > 0 ? parts[parts.length - 1] : "";
         this.name = description.name;
-        this.methods = Collections.unmodifiableList(methods);
+        this.methods.addAll(methods);
 
         Matcher matcher = Pattern.compile("\\{.*\\}").matcher(this.path);
         while (matcher.find()) {
