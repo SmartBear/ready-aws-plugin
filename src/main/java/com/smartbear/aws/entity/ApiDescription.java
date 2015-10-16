@@ -1,6 +1,8 @@
 package com.smartbear.aws.entity;
 
 import javax.json.JsonObject;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public final class ApiDescription {
@@ -9,8 +11,10 @@ public final class ApiDescription {
     public final String description;
     public final String baseUrl;
     public final List<Stage> stages;
+    public final List<ApiKey> apiKeys;
 
     private Stage stage = null;
+    private ApiKey apiKey = null;
 
     public ApiDescription(String id, String name, String description, String baseUrl, List<Stage> stages) {
         this.id = id;
@@ -18,19 +22,34 @@ public final class ApiDescription {
         this.description = description;
         this.baseUrl = baseUrl;
         this.stages = stages;
+        this.apiKeys = Collections.unmodifiableList(Collections.<ApiKey>emptyList());
     }
 
-    public ApiDescription(JsonObject src, List<Stage> stages) {
+    public ApiDescription(JsonObject src, List<Stage> stages, List<ApiKey> allApiKeys) {
         this.id = src.getString("id", "");
         this.name = src.getString("name", "");
         this.description = src.getString("description", "");
         this.baseUrl = src.getString("baseURL", "");
         this.stages = stages;
+        this.apiKeys = Collections.unmodifiableList(filterKeys(allApiKeys));
+    }
+
+    private List<ApiKey> filterKeys(List<ApiKey> allApiKeys) {
+        List<ApiKey> result = new LinkedList<>();
+        for (ApiKey key: allApiKeys) {
+            for (String stage: key.stages) {
+                if (stage.startsWith(this.id + "/")) {
+                    result.add(key);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     @Override
     public String toString() {
-        return String.format("id=%s, name=%s, description%s, stages=%s\r\n", id, name, description, stages);
+        return String.format("id=%s, name=%s, description=%s, stages=%s, apiKeys=%s\r\n", id, name, description, stages, apiKeys);
     }
 
     public Stage getStage() {
@@ -39,5 +58,13 @@ public final class ApiDescription {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public ApiKey getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(ApiKey key) {
+        this.apiKey = key;
     }
 }

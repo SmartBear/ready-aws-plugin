@@ -7,6 +7,7 @@ import com.smartbear.aws.Helper;
 import com.smartbear.aws.Strings;
 import com.smartbear.aws.entity.Api;
 import com.smartbear.aws.entity.ApiDescription;
+import com.smartbear.aws.entity.ApiKey;
 import com.smartbear.aws.entity.HttpMethod;
 import com.smartbear.aws.entity.HttpResource;
 import com.smartbear.aws.entity.HttpResourceDescription;
@@ -50,6 +51,7 @@ public final class ApiReader {
         if (items == null) {
             throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "API list"));
         }
+        final List<ApiKey> apiKeys = getApiKeys();
         List<ApiDescription> apis = Helper.extractList(items, new Helper.EntityFactory<ApiDescription>() {
             @Override
             public ApiDescription create(JsonObject value) {
@@ -63,7 +65,7 @@ public final class ApiReader {
                     stages = Collections.emptyList();
                 }
 
-                return new ApiDescription(value, stages);
+                return new ApiDescription(value, stages, apiKeys);
             }
         });
 
@@ -83,6 +85,16 @@ public final class ApiReader {
         }
 
         return new Api(description, treeRoot);
+    }
+
+    public List<ApiKey> getApiKeys() throws ApplicationException {
+        JsonObject res = requestExecutor.perform("GET", "/apikeys", "");
+        return Helper.extractList(res.getJsonArray("item"), new Helper.EntityFactory<ApiKey>() {
+            @Override
+            public ApiKey create(JsonObject value) {
+                return new ApiKey(value);
+            }
+        });
     }
 
     private List<Stage> readStages(String apiId) throws ApplicationException {
