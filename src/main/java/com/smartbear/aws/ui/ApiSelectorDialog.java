@@ -35,6 +35,7 @@ public class ApiSelectorDialog implements AutoCloseable {
         this.dialog = ADialogBuilder.buildDialog(newProjectMode ? NewProjectForm.class : Form.class);
         this.apis = apiList;
         this.apiTable = new JTable(new ApiTableModel(this.apis));
+        apiTable.setRowHeight(21);
 
         final JComboBox comboBox = new JComboBox(new DefaultComboBoxModel());
         TableColumn col = this.apiTable.getColumnModel().getColumn(1);
