@@ -71,9 +71,11 @@ public class Helper {
 
     public static <T> String collectionToString(Collection<T> src) {
         StringBuilder builder = new StringBuilder();
+        builder.append("[");
         for (T item: src) {
             builder.append("(").append(item.toString()).append("), ");
         }
+        builder.append("]");
         return builder.toString();
     }
 }
