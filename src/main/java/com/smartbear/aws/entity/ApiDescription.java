@@ -67,4 +67,25 @@ public final class ApiDescription {
     public void setApiKey(ApiKey key) {
         this.apiKey = key;
     }
+
+    public List<ApiKey> getSelectedStageKeys() {
+        if (stage == null) {
+            return Collections.emptyList();
+        }
+        if (apiKeys.size() == 0) {
+            return Collections.emptyList();
+        }
+
+        List<ApiKey> result = new LinkedList<>();
+
+        for (ApiKey key: apiKeys) {
+            for (String keyStage: key.stages) {
+                if (keyStage.endsWith("/" + stage.name)) {
+                    result.add(key);
+                }
+            }
+        }
+
+        return result;
+    }
 }

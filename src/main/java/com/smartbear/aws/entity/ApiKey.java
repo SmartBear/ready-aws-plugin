@@ -32,6 +32,6 @@ public final class ApiKey {
 
     @Override
     public String toString() {
-        return String.format("id=%s, name=%s, description=%s, stages=%s", id, name, description, stages);
+        return String.format("%s (%s)", name, description);
     }
 }
