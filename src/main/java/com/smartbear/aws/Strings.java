@@ -5,6 +5,8 @@ public final class Strings {
     private Strings() {
     }
 
+    public static final String REPOSITORY_URL = "https://github.com/SmartBear/ready-apis-plugin.git";
+
     public static final class PluginInfo {
         public static final String NAME = "AWS API Gateway Plugin";
         public static final String DESCRIPTION = "Adds actions for importing APIs from Amazon Web Service API Gateway";
@@ -88,7 +90,11 @@ public final class Strings {
         public static final String DEFAULT_RESPONSE_LABEL = "Default response";
         public static final String DEFAULT_RESPONSE_DESCRIPTION = "Enter default method response";
         public static final String INTEGRATION_OPTIONS = "Integration options";
+    }
 
+    public static final class KeySelectorDialog {
+        public static final String CAPTION = "Choose ApiKey values for the selected APIs";
+        public static final String DESCRIPTION = "Please choose ApiKey values for the selected to import APIs";
     }
 
     public static final class ApiImporter {

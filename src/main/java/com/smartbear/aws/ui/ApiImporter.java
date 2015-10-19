@@ -9,6 +9,7 @@ import com.eviware.soapui.impl.rest.RestServiceFactory;
 import com.eviware.soapui.impl.rest.support.RestParamProperty;
 import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
+import com.eviware.soapui.support.StringUtils;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.x.dialogs.Worker;
 import com.eviware.x.dialogs.XProgressDialog;
@@ -18,6 +19,7 @@ import com.smartbear.aws.Strings;
 import com.smartbear.aws.amazon.ApiReader;
 import com.smartbear.aws.entity.Api;
 import com.smartbear.aws.entity.ApiDescription;
+import com.smartbear.aws.entity.ApiKey;
 import com.smartbear.aws.entity.HttpMethod;
 import com.smartbear.aws.entity.HttpResource;
 import com.smartbear.aws.entity.MethodParameter;
@@ -44,6 +46,8 @@ public class ApiImporter implements Worker {
     }
 
     public static List<RestService> importServices(ApiReader reader, List<ApiDescription> apis, WsdlProject project) {
+        KeySelectorDialog.showIfNeeded(apis);
+
         XProgressDialog dlg = UISupport.getDialogs().createProgressDialog(Strings.ApiImporter.IMPORT_PROGRESS, 100, "", true);
         ApiImporter worker = new ApiImporter(dlg, reader, apis, project);
         try {
@@ -107,10 +111,33 @@ public class ApiImporter implements Worker {
                     restService.addNewResource(api.stage.name, api.stage.name);
             root.setDescription(api.stage == null ? "" : api.stage.description);
             addResources(root, api.rootResource);
+            //add ApiKey header only to the root resources, all other inherit its
+            addApiKeyHeader(root, api);
             return restService;
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private static void addApiKeyHeader(RestResource root, Api api) {
+        if (api.apiKey == null) {
+            return;
+        }
+        String customPropertyName = "aws-api-key-" + api.name.replaceAll("\\s", "-");
+        WsdlProject project = root.getProject();
+        if (!project.hasProperty(customPropertyName)) {
+            project.addProperty(customPropertyName);
+        }
+
+        ApiKey key = api.apiKey;
+
+        project.getProperty(customPropertyName).setValue(key.id);
+
+        RestParamProperty param = root.addProperty("x-api-key");
+        String keyValue = String.format("${#Project#%s}", customPropertyName);
+        param.setValue(keyValue);
+        param.setDefaultValue(keyValue);
+        param.setStyle(RestParamsPropertyHolder.ParameterStyle.HEADER);
     }
 
     private void addResources(RestResource target, HttpResource source) {
