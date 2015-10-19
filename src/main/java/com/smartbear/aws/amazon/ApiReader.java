@@ -41,7 +41,10 @@ public final class ApiReader {
 
     public boolean checkConnection() throws ApplicationException {
         JsonObject json = requestExecutor.perform("GET", "/", "");
-        return json.containsKey("self");
+        if (!json.containsKey("self")) {
+            throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "Check connection"));
+        }
+        return true;
     }
 
 
