@@ -25,7 +25,6 @@ public class ApiListLoader implements Worker {
     private boolean canceled = false;
     private final XProgressDialog waitDialog;
     private final ApiReader reader;
-    private final StringBuilder errors = new StringBuilder();
     private Result result = null;
 
     public static Result downloadList(ApiReader reader) {
@@ -54,7 +53,7 @@ public class ApiListLoader implements Worker {
 
             result = new Result(reader.getApis(), "");
         } catch (Exception ex) {
-            result = new Result(Collections.<ApiDescription>emptyList(), errors.toString());
+            result = new Result(Collections.<ApiDescription>emptyList(), ex.getMessage());
         }
         return null;
     }
@@ -65,9 +64,6 @@ public class ApiListLoader implements Worker {
             return;
         }
         waitDialog.setVisible(false);
-        if (errors.length() > 0) {
-            UISupport.showErrorMessage(errors.toString());
-        }
     }
 
     @Override
