@@ -132,7 +132,7 @@ public class AccountInfoDialog implements AutoCloseable {
 
         //see available regions at the http://docs.aws.amazon.com/general/latest/gr/rande.html
         @AField(name = Strings.AccountInfoDialog.REGION_LABEL, description = Strings.AccountInfoDialog.REGION_DESCRIPTION, type = AField.AFieldType.COMBOBOX,
-                values = {"US East (N. Virginia)", "US West (Oregon)", "EU (Ireland)"}, defaultValue = "US East (N. Virginia)")
+                values = {"US East (N. Virginia)", "US West (Oregon)", "EU (Ireland)", "Asia Pacific (Tokyo)"}, defaultValue = "US East (N. Virginia)")
         public final static String REGION = Strings.AccountInfoDialog.REGION_LABEL;
     }
 }
