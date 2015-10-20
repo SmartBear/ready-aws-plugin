@@ -21,18 +21,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class ApiReader {
-    private final static String APIS_PATH = "/restapis";
-    private final static String RESOURCES_PATH_TMPL = "/restapis/%s/resources";
+public final class ApiReader extends ApiOperationBase {
     private final static String STAGES_PATH_TMPL = "/restapis/%s/stages";
     private final static String METHOD_PATH_TMPL = "/restapis/%s/resources/%s/methods/%s";
 
     private final String region;
-    private final HttpRequestExecutor requestExecutor;
 
     public ApiReader(String accessKey, String secretKey, String region) {
+        super(accessKey, secretKey, region);
         this.region = region;
-        this.requestExecutor = new HttpRequestExecutor(accessKey, secretKey, region);
     }
 
     public String getRegion() {
@@ -41,16 +38,15 @@ public final class ApiReader {
 
     public boolean checkConnection() throws ApplicationException {
         JsonObject json = requestExecutor.perform("GET", "/", "");
-        if (!json.containsKey("self")) {
+        if (!json.containsKey("_links")) {
             throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "Check connection"));
         }
         return true;
     }
 
-
     public List<ApiDescription> getApis() throws ApplicationException {
         JsonObject json = requestExecutor.perform("GET", APIS_PATH, "");
-        JsonArray items = json.getJsonArray("item");
+        JsonArray items = extractItemsFromResponse(json);
         if (items == null) {
             throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "API list"));
         }
@@ -92,7 +88,11 @@ public final class ApiReader {
 
     public List<ApiKey> getApiKeys() throws ApplicationException {
         JsonObject res = requestExecutor.perform("GET", "/apikeys", "");
-        return Helper.extractList(res.getJsonArray("item"), new Helper.EntityFactory<ApiKey>() {
+        JsonArray items = extractItemsFromResponse(res);
+        if (items == null) {
+            throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "API keys"));
+        }
+        return Helper.extractList(items, new Helper.EntityFactory<ApiKey>() {
             @Override
             public ApiKey create(JsonObject value) {
                 return new ApiKey(value);
@@ -103,7 +103,7 @@ public final class ApiReader {
     private List<Stage> readStages(String apiId) throws ApplicationException {
         final String path = String.format(STAGES_PATH_TMPL, apiId);
         JsonObject json = requestExecutor.perform("GET", path, "");
-        JsonArray items = json.getJsonArray("item");
+        JsonArray items = extractItemsFromResponse(json);
         if (items == null) {
             throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "API stages"));
         }
@@ -139,7 +139,7 @@ public final class ApiReader {
         final String path = String.format(RESOURCES_PATH_TMPL, apiId);
         JsonObject json = requestExecutor.perform("GET", path, "");
 
-        JsonArray items = json.getJsonArray("item");
+        JsonArray items = extractItemsFromResponse(json);
         if (items == null) {
             throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "API resources"));
         }

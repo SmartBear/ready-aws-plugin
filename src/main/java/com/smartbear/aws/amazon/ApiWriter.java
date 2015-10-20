@@ -13,16 +13,13 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-public final class ApiWriter {
-    private final static String APIS_PATH = "/restapis";
-    private final static String RESOURCES_PATH_TMPL = "/restapis/%s/resources";
+public final class ApiWriter extends ApiOperationBase {
     private final static String RESOURCE_PATH_TMPL = RESOURCES_PATH_TMPL + "/%s";
 
-    private final HttpRequestExecutor requestExecutor;
     private final DeploymentSetting deploymentSetting;
 
     public ApiWriter(String accessKey, String secretKey, String region, DeploymentSetting deploymentSetting) {
-        this.requestExecutor = new HttpRequestExecutor(accessKey, secretKey, region);
+        super(accessKey, secretKey, region);
         this.deploymentSetting = deploymentSetting;
     }
 
@@ -78,8 +75,7 @@ public final class ApiWriter {
     public String getRootResourceId(String apiId) throws ApplicationException {
         final String path = String.format(RESOURCES_PATH_TMPL, apiId);
         JsonObject json = requestExecutor.perform("GET", path, "");
-
-        JsonArray items = json.getJsonArray("item");
+        JsonArray items = extractItemsFromResponse(json);
         if (items == null) {
             throw new ApplicationException(String.format(Strings.Error.UNEXPECTED_RESPONSE_FORMAT, "API resources"));
         }
