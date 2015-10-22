@@ -127,6 +127,11 @@ public final class SignatureBuilder {
     }
 
     static String convertToHex(byte[] value) {
-        return org.apache.commons.codec.binary.Hex.encodeHexString(value);
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < value.length; i++) {
+            sb.append(Integer.toString((value[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return sb.toString();
     }
 }
