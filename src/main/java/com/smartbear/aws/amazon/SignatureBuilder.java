@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public final class SignatureBuilder {
+    public final static String ACCEPT_TYPE = "application/hal+json";
+
     private final String region;
     private final String service;
     private final String signedHeaders;
@@ -30,7 +32,7 @@ public final class SignatureBuilder {
     public SignatureBuilder(String accessKey, String secretKey, String region) {
         this.region = region;
         this.service = "apigateway";
-        this.signedHeaders = "host;x-amz-date";
+        this.signedHeaders = "accept;host;x-amz-date";
         this.algorithm = "AWS4-HMAC-SHA256";
         this.host = String.format("apigateway.%s.amazonaws.com", region);
 
@@ -59,7 +61,7 @@ public final class SignatureBuilder {
 
             String canonicalUri = uri;
             String canonicalQuerystring = query;
-            String canonicalHeaders = String.format("host:%s\nx-amz-date:%s\n", host, amzDate);
+            String canonicalHeaders = String.format("accept:%s\nhost:%s\nx-amz-date:%s\n", ACCEPT_TYPE, host, amzDate);
 
             String canonicalRequest = String.format("%s\n%s\n%s\n%s\n%s\n%s",
                     method,

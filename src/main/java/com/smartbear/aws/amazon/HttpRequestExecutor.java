@@ -81,6 +81,7 @@ public final class HttpRequestExecutor {
             connection.setDoOutput(true);
         }
         connection.setRequestProperty("Content-Type", "application/x-amz-json-1.0");
+        connection.setRequestProperty("Accept", SignatureBuilder.ACCEPT_TYPE);
         connection.setRequestProperty("X-Amz-Date", signatureBuilder.getAmzDate());
         connection.setRequestProperty("Authorization", authHeader);
         HttpURLConnection httpConnection = (HttpURLConnection)connection;
