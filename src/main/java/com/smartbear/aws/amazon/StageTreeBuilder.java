@@ -1,7 +1,5 @@
 package com.smartbear.aws.amazon;
 
-import com.eviware.soapui.SoapUI;
-import com.smartbear.aws.Helper;
 import com.smartbear.aws.entity.HttpMethod;
 import com.smartbear.aws.entity.HttpResource;
 import com.smartbear.aws.entity.StageMethod;
