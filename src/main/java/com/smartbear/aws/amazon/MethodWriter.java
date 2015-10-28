@@ -1,6 +1,5 @@
 package com.smartbear.aws.amazon;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.rest.RestMethod;
 import com.eviware.soapui.impl.rest.RestRepresentation;
 import com.eviware.soapui.impl.rest.support.RestParamProperty;
@@ -8,6 +7,7 @@ import com.eviware.soapui.impl.rest.support.RestParamsPropertyHolder;
 import com.eviware.soapui.support.StringUtils;
 import com.smartbear.aws.ApplicationException;
 import com.smartbear.aws.DeploymentSetting;
+import com.smartbear.rapisupport.RapiLogger;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -76,7 +76,7 @@ public final class MethodWriter {
     private void performRequest(String path, String body, String logTitle) throws ApplicationException {
         JsonObject result = requestExecutor.perform("PUT", path, "", body);
         if (logRequestResult) {
-            SoapUI.log(String.format("%s = %s", logTitle, result));
+            RapiLogger.log(String.format("%s = %s", logTitle, result));
         }
     }
 

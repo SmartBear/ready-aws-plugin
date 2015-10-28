@@ -1,6 +1,5 @@
 package com.smartbear.aws.amazon;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.support.StringUtils;
 import com.smartbear.aws.ApplicationException;
 import com.smartbear.aws.Helper;
@@ -13,6 +12,7 @@ import com.smartbear.aws.entity.HttpResource;
 import com.smartbear.aws.entity.HttpResourceDescription;
 import com.smartbear.aws.entity.Stage;
 import com.smartbear.aws.entity.StageMethod;
+import com.smartbear.rapisupport.RapiLogger;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -60,7 +60,7 @@ public final class ApiReader extends ApiOperationBase {
                 try {
                     stages = readStages(apiId);
                 } catch (ApplicationException ex) {
-                    SoapUI.logError(ex);
+                    RapiLogger.logError(ex);
                     stages = Collections.emptyList();
                 }
 

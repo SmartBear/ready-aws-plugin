@@ -1,7 +1,7 @@
 package com.smartbear.aws;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.support.StringUtils;
+import com.smartbear.rapisupport.RapiLogger;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -64,7 +64,7 @@ public class Helper {
         try {
             return new URL(s);
         } catch (MalformedURLException e) {
-            SoapUI.logError(e);
+            RapiLogger.logError(e);
             return null;
         }
     }

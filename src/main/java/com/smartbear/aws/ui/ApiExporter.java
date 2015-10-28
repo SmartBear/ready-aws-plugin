@@ -1,6 +1,5 @@
 package com.smartbear.aws.ui;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.x.dialogs.Worker;
@@ -8,6 +7,7 @@ import com.eviware.x.dialogs.XProgressDialog;
 import com.eviware.x.dialogs.XProgressMonitor;
 import com.smartbear.aws.Strings;
 import com.smartbear.aws.amazon.ApiWriter;
+import com.smartbear.rapisupport.RapiLogger;
 
 public class ApiExporter implements Worker {
     private boolean canceled;
@@ -29,7 +29,7 @@ public class ApiExporter implements Worker {
             worker.waitDialog.run(worker);
         } catch (Exception ex) {
             UISupport.showErrorMessage(ex);
-            SoapUI.logError(ex);
+            RapiLogger.logError(ex);
         }
     }
 
@@ -38,7 +38,7 @@ public class ApiExporter implements Worker {
         try {
             apiWriter.perform(restService);
         } catch (Exception ex) {
-            SoapUI.logError(ex);
+            RapiLogger.logError(ex);
             errors.append(String.format(Strings.ApiExporter.EXPORT_ERROR, restService.getName(), ex.getMessage()));
         }
         if (errors.length() > 0) {

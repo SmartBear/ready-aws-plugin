@@ -1,6 +1,5 @@
 package com.smartbear.aws.ui;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.support.UISupport;
 import com.eviware.x.dialogs.Worker;
 import com.eviware.x.dialogs.XProgressDialog;
@@ -8,6 +7,8 @@ import com.eviware.x.dialogs.XProgressMonitor;
 import com.smartbear.aws.Strings;
 import com.smartbear.aws.amazon.ApiReader;
 import com.smartbear.aws.entity.ApiDescription;
+import com.smartbear.rapisupport.RapiLogger;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class ApiListLoader implements Worker {
             worker.waitDialog.run(worker);
         } catch (Exception ex) {
             UISupport.showErrorMessage(ex.getMessage());
-            SoapUI.logError(ex);
+            RapiLogger.logError(ex);
         }
         return worker.result;
     }

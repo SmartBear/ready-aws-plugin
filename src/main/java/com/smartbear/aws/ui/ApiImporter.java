@@ -1,6 +1,5 @@
 package com.smartbear.aws.ui;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.rest.RestMethod;
 import com.eviware.soapui.impl.rest.RestRepresentation;
 import com.eviware.soapui.impl.rest.RestResource;
@@ -23,6 +22,7 @@ import com.smartbear.aws.entity.HttpMethod;
 import com.smartbear.aws.entity.HttpResource;
 import com.smartbear.aws.entity.MethodParameter;
 import com.smartbear.aws.entity.MethodResponse;
+import com.smartbear.rapisupport.RapiLogger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +53,7 @@ public class ApiImporter implements Worker {
             worker.waitDialog.run(worker);
         } catch (Exception ex) {
             UISupport.showErrorMessage(ex.getMessage());
-            SoapUI.logError(ex);
+            RapiLogger.logError(ex);
         }
         return worker.addedServices;
     }
@@ -67,7 +67,7 @@ public class ApiImporter implements Worker {
                 RestService service = build(api, project, reader.getRegion());
                 addedServices.add(service);
             } catch (ApplicationException ex) {
-                SoapUI.logError(ex);
+                RapiLogger.logError(ex);
                 errors.append(String.format(Strings.ApiImporter.IMPORT_ERROR, description.name, ex.getMessage()));
             }
         }

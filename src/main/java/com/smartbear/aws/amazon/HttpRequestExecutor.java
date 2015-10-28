@@ -1,9 +1,9 @@
 package com.smartbear.aws.amazon;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.support.StringUtils;
 import com.smartbear.aws.ApplicationException;
 import com.smartbear.aws.Strings;
+import com.smartbear.rapisupport.RapiLogger;
 
 import javax.json.JsonObject;
 import javax.json.stream.JsonParsingException;
@@ -89,7 +89,7 @@ public final class HttpRequestExecutor {
             try {
                 httpConnection.setRequestMethod(method);
             } catch (ProtocolException ex) {
-                SoapUI.logError(ex);
+                RapiLogger.logError(ex);
             }
         }
 

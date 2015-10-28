@@ -1,6 +1,5 @@
 package com.smartbear.aws.action;
 
-import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.impl.WorkspaceImpl;
 import com.eviware.soapui.impl.rest.RestService;
 import com.eviware.soapui.impl.wsdl.WsdlProject;
@@ -12,6 +11,7 @@ import com.smartbear.aws.amazon.ApiReader;
 import com.smartbear.aws.ui.AccountInfoDialog;
 import com.smartbear.aws.ui.ApiImporter;
 import com.smartbear.aws.ui.ApiSelectorDialog;
+import com.smartbear.rapisupport.RapiLogger;
 import com.smartbear.rapisupport.ServiceFactory;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class NewProjectAction extends AbstractSoapUIAction<WorkspaceImpl> {
         try {
             wsdlProject = workspace.createProject(selectedApis.projectName, null);
         } catch (Exception e) {
-            SoapUI.logError(e);
+            RapiLogger.logError(e);
             UISupport.showErrorMessage(String.format(Strings.NewProjectAction.UNABLE_CREATE_ERROR, e.getClass().getName(), e.getMessage()));
             return;
         }
