@@ -22,7 +22,7 @@ public final class HttpRequestExecutor {
     private final SignatureBuilder signatureBuilder;
 
     public HttpRequestExecutor(String accessKey, String secretKey, String region) {
-        this.signatureBuilder = new SignatureBuilder(accessKey, secretKey, region);
+        this.signatureBuilder = new ApiManagmentSignatureBuilder(accessKey, secretKey, region);
     }
 
     public JsonObject perform(String method, String path, String query) throws ApplicationException {

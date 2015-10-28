@@ -13,12 +13,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public final class SignatureBuilder {
+public abstract class SignatureBuilder {
     public final static String ACCEPT_TYPE = "application/hal+json";
 
     private final String region;
     private final String service;
-    private final String signedHeaders;
     private final String algorithm;
     private final String host;
     private final String dateStamp;
@@ -29,12 +28,11 @@ public final class SignatureBuilder {
 
     private final String credentialScope;
 
-    public SignatureBuilder(String accessKey, String secretKey, String region) {
+    protected SignatureBuilder(String accessKey, String secretKey, String region, String service, String host) {
         this.region = region;
-        this.service = "apigateway";
-        this.signedHeaders = "accept;host;x-amz-date";
+        this.service = service;
         this.algorithm = "AWS4-HMAC-SHA256";
-        this.host = String.format("apigateway.%s.amazonaws.com", region);
+        this.host = host;
 
         final Date date = new Date();
         this.amzDate = this.fmtDate(date, "yyyyMMdd'T'HHmmss'Z'");
@@ -61,7 +59,8 @@ public final class SignatureBuilder {
 
             String canonicalUri = uri;
             String canonicalQuerystring = query;
-            String canonicalHeaders = String.format("accept:%s\nhost:%s\nx-amz-date:%s\n", ACCEPT_TYPE, host, amzDate);
+            String canonicalHeaders = getCanonicalHeaders();
+            String signedHeaders = getSignedHeaders();
 
             String canonicalRequest = String.format("%s\n%s\n%s\n%s\n%s\n%s",
                     method,
@@ -78,7 +77,7 @@ public final class SignatureBuilder {
 
             String signature = convertToHex(HmacSHA256(stringToSign, signingKeyBytes));
 
-            return fmtAuthorizationHeader(signature);
+            return fmtAuthorizationHeader(signature, signedHeaders);
         } catch (InvalidKeyException e) {
             throw new ApplicationException(Strings.Error.INVALID_KEY, e);
         } catch (NoSuchAlgorithmException e) {
@@ -88,6 +87,10 @@ public final class SignatureBuilder {
         }
     }
 
+    protected abstract String getSignedHeaders();
+
+    protected abstract String getCanonicalHeaders();
+
     private String fmtDate(Date date, String format) {
         final TimeZone utc = TimeZone.getTimeZone("UTC");
         final SimpleDateFormat fmt = new SimpleDateFormat(format);
@@ -95,7 +98,7 @@ public final class SignatureBuilder {
         return fmt.format(date);
     }
 
-    private String fmtAuthorizationHeader(String signature) {
+    private String fmtAuthorizationHeader(String signature, String signedHeaders) {
         return String.format("%s Credential=%s/%s, SignedHeaders=%s, Signature=%s", algorithm, accessKey, credentialScope, signedHeaders, signature);
     }
 
