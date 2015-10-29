@@ -13,12 +13,10 @@ public final class MethodResponse {
 
     public MethodResponse(JsonObject src) {
         ResponseValidator.checkResponse(src);
-        this.statusCode = src.getString("statusCode", "200");
+        this.statusCode = src.getString("name", "200");
         List<String> list = new LinkedList<>();
-        JsonObject types = src.getJsonObject("responseModels");
-        for (String key: types.keySet()) {
-            list.add(key);
-        }
+        list.add("");
+        //TODO: need separate request for each response to get complete information
         this.mediaTypes = Collections.unmodifiableList(list);
     }
 

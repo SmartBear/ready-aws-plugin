@@ -3,6 +3,7 @@ package com.smartbear.aws.entity;
 import com.eviware.soapui.impl.rest.RestRequestInterface;
 import com.smartbear.aws.Helper;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 import java.util.Collections;
@@ -24,10 +25,9 @@ public final class HttpMethod {
         this.httpMethod = Enum.valueOf(RestRequestInterface.HttpMethod.class, this.name);
         this.apiKeyRequired = src.getBoolean("apiKeyRequired", false);
         this.authorizationType = src.getString("authorizationType", "");
-        //TODO:
+        //optional parameter
         this.parameters = Collections.unmodifiableList(getParameters(src.get("requestParameters")));
-        //TODO;
-        this.responses = Collections.unmodifiableList(getResponses(src.get("methodResponses")));
+        this.responses = Collections.unmodifiableList(getResponses(src));
     }
 
     public HttpMethod(StageMethod src) {
@@ -55,12 +55,13 @@ public final class HttpMethod {
         this.authorizationType = authorizationType;
     }
 
-    private List<MethodResponse> getResponses(JsonValue value) {
+    private List<MethodResponse> getResponses(JsonObject src) {
+        JsonArray responses = ResponseParser.extractChildArray(src, "_links", "method:responses");
         List<MethodResponse> values = new LinkedList<>();
-        if (value instanceof JsonObject) {
-            JsonObject json = (JsonObject)value;
-            for (String key: json.keySet()) {
-                values.add(new MethodResponse(json.getJsonObject(key)));
+        for (JsonValue item: responses) {
+            if (item instanceof JsonObject) {
+                JsonObject responseJson = (JsonObject)item;
+                values.add(new MethodResponse(responseJson));
             }
         }
         return values;

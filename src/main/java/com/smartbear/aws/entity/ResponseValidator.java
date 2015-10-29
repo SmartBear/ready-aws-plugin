@@ -12,11 +12,11 @@ public final class ResponseValidator {
     private static final String APIKEY_WARNING_TMPL = "Field '%s' is absent in the ApiKey response";
     private static final String[] APIKEY_FIELDS = { "id", "name", "description", "enabled", "stageKeys" };
     private static final String METHOD_WARNING_TMPL = "Field '%s' is absent in the Method response";
-    private static final String[] METHOD_FIELDS = { "httpMethod", "apiKeyRequired", "authorizationType", "requestParameters", "methodResponses" };
+    private static final String[] METHOD_FIELDS = { "httpMethod", "apiKeyRequired", "authorizationType", "requestParameters", "_links" };
     private static final String RESOURCE_WARNING_TMPL = "Field '%s' is absent in the Resource response";
-    private static final String[] RESOURCE_FIELDS = { "id", "parentId", "path", "pathPart" };
+    private static final String[] RESOURCE_FIELDS = { "id", "parentId", "path", "pathPart", "_links" };
     private static final String RESPONSE_WARNING_TMPL = "Field '%s' is absent in the Response response";
-    private static final String[] RESPONSE_FIELDS = { "statusCode", "responseModels" };
+    private static final String[] RESPONSE_FIELDS = { "name" };
     private static final String STAGE_WARNING_TMPL = "Field '%s' is absent in the Stage response";
     private static final String[] STAGE_FIELDS = { "stageName", "description", "deploymentId" };
     private static final String DEPLOYMENT_METHOD_WARNING_TMPL = "Field '%s' is absent in the Deployment response";
