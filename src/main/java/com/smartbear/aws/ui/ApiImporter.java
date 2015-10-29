@@ -13,6 +13,7 @@ import com.eviware.x.dialogs.Worker;
 import com.eviware.x.dialogs.XProgressDialog;
 import com.eviware.x.dialogs.XProgressMonitor;
 import com.smartbear.aws.ApplicationException;
+import com.smartbear.aws.AwsIamAuthRequestFilter;
 import com.smartbear.aws.Strings;
 import com.smartbear.aws.amazon.ApiReader;
 import com.smartbear.aws.entity.Api;
@@ -112,6 +113,7 @@ public class ApiImporter implements Worker {
             addResources(root, api.rootResource);
             //add ApiKey header only to the root resources, all other inherit its
             addApiKeyHeader(root, api);
+            addCredentialProperty(api);
             return restService;
         } catch (Exception e) {
             return null;
@@ -171,9 +173,46 @@ public class ApiImporter implements Worker {
                         methodResponse.setStatus(Arrays.asList(new String[] {resp.statusCode}));
                     }
                 }
+
+                //add AWS_IAM authorization headers
+                if ("AWS_IAM".equalsIgnoreCase(method.getAuthorizationType())) {
+                    RestParamProperty dateHeader = restMethod.addProperty(AwsIamAuthRequestFilter.DATE_HEADER);
+                    dateHeader.setStyle(RestParamsPropertyHolder.ParameterStyle.HEADER);
+                    dateHeader.setRequired(false);
+                    RestParamProperty authHeader = restMethod.addProperty(AwsIamAuthRequestFilter.AUTH_HEADER);
+                    authHeader.setStyle(RestParamsPropertyHolder.ParameterStyle.HEADER);
+                    authHeader.setRequired(true);
+                }
                 restMethod.addNewRequest("Request 1");
             }
             addResources(restResource, child);
         }
+    }
+
+    private void addCredentialProperty(Api api) {
+        if (!isRequiredAuthentication(api.rootResource)) {
+            return;
+        }
+
+        String customPropertyName = String.format(AwsIamAuthRequestFilter.CREDENTIAL_PROPERTY_TMPL, api.name.replaceAll("\\s", "-"));
+        if (!project.hasProperty(customPropertyName)) {
+            project.addProperty(customPropertyName);
+        }
+
+        project.getProperty(customPropertyName).setValue(reader.credential);
+    }
+
+    private boolean isRequiredAuthentication(HttpResource source) {
+        for (HttpMethod method: source.methods) {
+            if ("AWS_IAM".equalsIgnoreCase(method.getAuthorizationType())) {
+                return true;
+            }
+        }
+        for (HttpResource child: source.resources) {
+            if (isRequiredAuthentication(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

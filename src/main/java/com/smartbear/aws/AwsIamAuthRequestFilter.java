@@ -21,8 +21,9 @@ import java.util.List;
 
 @PluginRequestFilter(protocol = "https")
 public class AwsIamAuthRequestFilter extends AbstractRequestFilter {
-    private static final String DATE_HEADER = "X-Amz-Date";
-    private static final String AUTH_HEADER = "Authorization";
+    public static final String DATE_HEADER = "X-Amz-Date";
+    public static final String AUTH_HEADER = "Authorization";
+    public static final String CREDENTIAL_PROPERTY_TMPL = "aws-credential-%s";
 
     @Override
     public void filterRestRequest(SubmitContext context, RestRequestInterface request) {
@@ -99,7 +100,7 @@ public class AwsIamAuthRequestFilter extends AbstractRequestFilter {
         RestMethod method = request.getRestMethod();
         WsdlProject project = method.getProject();
         String serviceName = method.getInterface().getName();
-        String credentialProperty = String.format("aws-credential-%s", serviceName.replaceAll("\\s", "-"));
+        String credentialProperty = String.format(CREDENTIAL_PROPERTY_TMPL, serviceName.replaceAll("\\s", "-"));
         if (!project.hasProperty(credentialProperty)) {
             return null;
         }

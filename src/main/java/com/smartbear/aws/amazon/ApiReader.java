@@ -27,10 +27,12 @@ public final class ApiReader extends ApiOperationBase {
     private final static String METHOD_PATH_TMPL = "/restapis/%s/resources/%s/methods/%s";
 
     private final String region;
+    public final String credential;
 
     public ApiReader(String accessKey, String secretKey, String region) {
         super(accessKey, secretKey, region);
         this.region = region;
+        this.credential = String.format("%s###%s###%s", accessKey, secretKey, region);
     }
 
     public String getRegion() {
