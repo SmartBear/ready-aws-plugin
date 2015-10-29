@@ -26,9 +26,11 @@ public final class ApiDescription {
     }
 
     public ApiDescription(JsonObject src, List<Stage> stages, List<ApiKey> allApiKeys) {
+        ResponseValidator.checkApi(src);
         this.id = src.getString("id", "");
         this.name = src.getString("name", "");
         this.description = src.getString("description", "");
+        //TODO:
         this.baseUrl = src.getString("baseURL", "");
         this.stages = stages;
         this.apiKeys = Collections.unmodifiableList(filterKeys(allApiKeys));

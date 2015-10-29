@@ -17,6 +17,7 @@ public final class ApiKey {
 
 
     public ApiKey(JsonObject src) {
+        ResponseValidator.checkApiKey(src);
         this.id = src.getString("id", "");
         this.name = src.getString("name", "");
         this.description = src.getString("description", "");

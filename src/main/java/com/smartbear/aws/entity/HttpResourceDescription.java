@@ -1,8 +1,6 @@
 package com.smartbear.aws.entity;
 
-import com.eviware.soapui.impl.rest.RestRequestInterface;
 import com.smartbear.aws.Helper;
-import com.smartbear.utils.JsonFormatter;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -21,6 +19,7 @@ public final class HttpResourceDescription {
     public final List<String> methodsNames;
 
     public HttpResourceDescription(JsonObject src) {
+        ResponseValidator.checkResource(src);
         this.id = src.getString("id", "");
         this.parentId = src.getString("parentId", "");
         this.path = src.getString("path", "");

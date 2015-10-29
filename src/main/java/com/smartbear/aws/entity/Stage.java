@@ -14,6 +14,7 @@ public class Stage {
     }
 
     public Stage(JsonObject src) {
+        ResponseValidator.checkStage(src);
         this.name = src.getString("stageName", "");
         this.description = src.getString("description", "");
         this.deploymentId = src.getString("deploymentId", "");

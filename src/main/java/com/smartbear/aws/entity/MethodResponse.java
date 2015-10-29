@@ -12,6 +12,7 @@ public final class MethodResponse {
     public final List<String> mediaTypes;
 
     public MethodResponse(JsonObject src) {
+        ResponseValidator.checkResponse(src);
         this.statusCode = src.getString("statusCode", "200");
         List<String> list = new LinkedList<>();
         JsonObject types = src.getJsonObject("responseModels");

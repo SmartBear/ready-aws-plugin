@@ -19,11 +19,14 @@ public final class HttpMethod {
     private String authorizationType;
 
     public HttpMethod(JsonObject src) {
+        ResponseValidator.checkMethod(src);
         this.name = src.getString("httpMethod", "");
         this.httpMethod = Enum.valueOf(RestRequestInterface.HttpMethod.class, this.name);
         this.apiKeyRequired = src.getBoolean("apiKeyRequired", false);
         this.authorizationType = src.getString("authorizationType", "");
+        //TODO:
         this.parameters = Collections.unmodifiableList(getParameters(src.get("requestParameters")));
+        //TODO;
         this.responses = Collections.unmodifiableList(getResponses(src.get("methodResponses")));
     }
 

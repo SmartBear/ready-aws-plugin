@@ -10,6 +10,7 @@ import com.smartbear.aws.entity.ApiKey;
 import com.smartbear.aws.entity.HttpMethod;
 import com.smartbear.aws.entity.HttpResource;
 import com.smartbear.aws.entity.HttpResourceDescription;
+import com.smartbear.aws.entity.ResponseValidator;
 import com.smartbear.aws.entity.Stage;
 import com.smartbear.aws.entity.StageMethod;
 import com.smartbear.rapisupport.RapiLogger;
@@ -126,6 +127,7 @@ public final class ApiReader extends ApiOperationBase {
                 JsonObject resource = apiSummary.getJsonObject(path);
                 for (String methodName: resource.keySet()) {
                     JsonObject method = resource.getJsonObject(methodName);
+                    ResponseValidator.checkDeploymentMethod(method);
                     boolean apiKeyRequired = method.getBoolean("apiKeyRequired");
                     String authorizationType = method.getString("authorizationType", "NONE");
                     result.add(new StageMethod(methodName, path, apiKeyRequired, authorizationType));
