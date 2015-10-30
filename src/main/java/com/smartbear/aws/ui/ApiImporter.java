@@ -102,7 +102,7 @@ public class ApiImporter implements Worker {
         try {
             RestService restService = (RestService)wsdlProject.addNewInterface(api.name, RestServiceFactory.REST_TYPE);
             restService.setDescription(api.description);
-            restService.setBasePath(api.baseUrl);
+            restService.setBasePath("");
             String endPoint = String.format("https://%s.execute-api.%s.amazonaws.com", api.id, region);
             restService.addEndpoint(endPoint);
 

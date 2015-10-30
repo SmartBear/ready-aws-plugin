@@ -9,18 +9,16 @@ public final class ApiDescription {
     public final String id;
     public final String name;
     public final String description;
-    public final String baseUrl;
     public final List<Stage> stages;
     public final List<ApiKey> apiKeys;
 
     private Stage stage = null;
     private ApiKey apiKey = null;
 
-    public ApiDescription(String id, String name, String description, String baseUrl, List<Stage> stages) {
+    public ApiDescription(String id, String name, String description, List<Stage> stages) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.baseUrl = baseUrl;
         this.stages = stages;
         this.apiKeys = Collections.unmodifiableList(Collections.<ApiKey>emptyList());
     }
@@ -30,8 +28,6 @@ public final class ApiDescription {
         this.id = src.getString("id", "");
         this.name = src.getString("name", "");
         this.description = src.getString("description", "");
-        //TODO:
-        this.baseUrl = src.getString("baseURL", "");
         this.stages = stages;
         this.apiKeys = Collections.unmodifiableList(filterKeys(allApiKeys));
     }

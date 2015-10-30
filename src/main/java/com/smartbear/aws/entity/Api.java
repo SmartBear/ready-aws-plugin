@@ -4,7 +4,6 @@ public final class Api {
     public final String id;
     public final String name;
     public final String description;
-    public final String baseUrl;
     public final HttpResource rootResource;
     public final Stage stage;
     public final ApiKey apiKey;
@@ -14,7 +13,6 @@ public final class Api {
         this.id = src.id;
         this.name = src.name;
         this.description = src.name;
-        this.baseUrl = src.baseUrl;
         this.stage = src.getStage();
         this.apiKey = src.getApiKey();
         this.rootResource = rootResource;

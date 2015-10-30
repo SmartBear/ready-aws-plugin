@@ -8,7 +8,7 @@ public final class ResponseValidator {
     private static final boolean active = false;
 
     private static final String API_WARNING_TMPL = "Field '%s' is absent in the API response";
-    private static final String[] API_FIELDS = { "id", "name", "description", "baseURL" };
+    private static final String[] API_FIELDS = { "id", "name", "description" };
     private static final String APIKEY_WARNING_TMPL = "Field '%s' is absent in the ApiKey response";
     private static final String[] APIKEY_FIELDS = { "id", "name", "description", "enabled", "stageKeys" };
     private static final String METHOD_WARNING_TMPL = "Field '%s' is absent in the Method response";
