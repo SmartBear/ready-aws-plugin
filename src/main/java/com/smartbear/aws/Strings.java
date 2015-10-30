@@ -52,8 +52,9 @@ public final class Strings {
     }
 
     public static final class AccountInfoDialog {
-        public static final String PROMPT_API_DIALOG_CAPTION = "Import APIs from AWS API Gateway";
-        public static final String PROMPT_API_DIALOG_DESCRIPTION = "Enter an account details";
+        public static final String IMPORT_CAPTION = "Import APIs from AWS API Gateway";
+        public static final String EXPORT_CAPTION = "Deploy API to AWS API Gateway";
+        public static final String DESCRIPTION = "Enter an account details";
 
         public static final String ACCESS_KEY_LABEL = "Access Key";
         public static final String ACCESS_KEY_DESCRIPTION = "Please enter access key ID";
@@ -67,7 +68,6 @@ public final class Strings {
     public static final class SelectApiDialog {
         public static final String PROJECT_LABEL = "Project Name";
         public static final String PROJECT_DESCRIPTION = "Name of the project";
-        public static final String EMPTY_PROJECT_WARNING = "Please enter project name";
 
         public static final String CAPTION = "Select APIs to Import";
         public static final String DESCRIPTION = "Please select APIs you would like to import into the project from the list below";

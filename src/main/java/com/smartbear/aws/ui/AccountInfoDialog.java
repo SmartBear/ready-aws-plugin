@@ -52,8 +52,8 @@ public class AccountInfoDialog implements AutoCloseable {
     private final XFormField regionField;
     private ApiListLoader.Result loaderResult = null;
 
-    public AccountInfoDialog() {
-        this.dialog = ADialogBuilder.buildDialog(Form.class);
+    public AccountInfoDialog(boolean isImport) {
+        this.dialog = ADialogBuilder.buildDialog(isImport ? ImportForm.class : ExportForm.class);
         this.accessKeyField = dialog.getFormField(Form.ACCESS_KEY);
         this.secretKeyField = dialog.getFormField(Form.SECRET_KEY);
         this.regionField = dialog.getFormField(Form.REGION);
@@ -118,7 +118,6 @@ public class AccountInfoDialog implements AutoCloseable {
         dialog.release();
     }
 
-    @AForm(name = Strings.AccountInfoDialog.PROMPT_API_DIALOG_CAPTION, description = Strings.AccountInfoDialog.PROMPT_API_DIALOG_DESCRIPTION)
     public interface Form {
         @AField(name = Strings.AccountInfoDialog.ACCESS_KEY_LABEL, description = Strings.AccountInfoDialog.ACCESS_KEY_DESCRIPTION, type = AField.AFieldType.STRING)
         public final static String ACCESS_KEY = Strings.AccountInfoDialog.ACCESS_KEY_LABEL;
@@ -130,5 +129,15 @@ public class AccountInfoDialog implements AutoCloseable {
         @AField(name = Strings.AccountInfoDialog.REGION_LABEL, description = Strings.AccountInfoDialog.REGION_DESCRIPTION, type = AField.AFieldType.COMBOBOX,
                 values = {"US East (N. Virginia)", "US West (Oregon)", "EU (Ireland)", "Asia Pacific (Tokyo)"}, defaultValue = "US East (N. Virginia)")
         public final static String REGION = Strings.AccountInfoDialog.REGION_LABEL;
+    }
+
+    @AForm(name = Strings.AccountInfoDialog.IMPORT_CAPTION, description = Strings.AccountInfoDialog.DESCRIPTION)
+    public interface ImportForm extends Form {
+
+    }
+
+    @AForm(name = Strings.AccountInfoDialog.EXPORT_CAPTION, description = Strings.AccountInfoDialog.DESCRIPTION)
+    public interface ExportForm extends Form {
+
     }
 }

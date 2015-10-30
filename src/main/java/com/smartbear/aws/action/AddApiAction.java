@@ -24,7 +24,7 @@ public class AddApiAction extends AbstractSoapUIAction<WsdlProject> {
     @Override
     public void perform(WsdlProject wsdlProject, Object o) {
         AccountInfoDialog.Result accountInfo = null;
-        try (AccountInfoDialog dlg = new AccountInfoDialog()) {
+        try (AccountInfoDialog dlg = new AccountInfoDialog(true)) {
             accountInfo = dlg.show();
         }
         if (accountInfo == null || accountInfo.apis.size() == 0) {

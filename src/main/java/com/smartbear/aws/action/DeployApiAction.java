@@ -20,7 +20,7 @@ public class DeployApiAction extends AbstractSoapUIAction<RestService> {
     @Override
     public void perform(RestService restService, Object o) {
         AccountInfoDialog.Result accountInfo = null;
-        try (AccountInfoDialog dlg = new AccountInfoDialog()) {
+        try (AccountInfoDialog dlg = new AccountInfoDialog(false)) {
             accountInfo = dlg.show();
         }
         if (accountInfo == null || accountInfo.apis.size() == 0) {

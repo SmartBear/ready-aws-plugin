@@ -25,7 +25,7 @@ public class NewProjectAction extends AbstractSoapUIAction<WorkspaceImpl> {
     @Override
     public void perform(WorkspaceImpl workspace, Object o) {
         AccountInfoDialog.Result accountInfo = null;
-        try (AccountInfoDialog dlg = new AccountInfoDialog()) {
+        try (AccountInfoDialog dlg = new AccountInfoDialog(true)) {
             accountInfo = dlg.show();
         }
         if (accountInfo == null || accountInfo.apis.size() == 0) {
