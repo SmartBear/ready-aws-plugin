@@ -68,7 +68,7 @@ public class AwsIamAuthRequestFilter extends AbstractRequestFilter {
             headers.put(AUTH_HEADER, authHeader);
             request.setRequestHeaders(headers);
         } catch (ApplicationException ex) {
-            RapiLogger.logError(ex, "Error during set the AWS authentication header");
+            RapiLogger.logError(ex, "Error during set the AWS authorization header");
         }
     }
 

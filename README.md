@@ -32,7 +32,7 @@ Once installed there will have two ways to import an API from an AWS API Gateway
 * Via the "AWS API Gateway" option in the "Create project from..." drop-down when creating a new project
 
 In both cases you will be prompted for:
-* input the Access Key and Secret Key to authenticate in the AWS API Gateway service
+* input the Access Key and Secret Key to authorize in the AWS API Gateway service
 * select the region where you want to get APIs
 
 Once a valid credentials and region have been specified you will be presented with optional project name, a list of available APIs and
@@ -52,5 +52,5 @@ Another possibility is to export the selected REST service to the AWS API Gatewa
 
 Follow these steps to perform export:
 * select “Deploy API to AWS API Gateway” in the context menu for the selected REST service
-* input the Access Key and Secret Key to authenticate in the AWS API Gateway service and select the region where you want to create API
+* input the Access Key and Secret Key to authorize in the AWS API Gateway service and select the region where you want to create API
 * specify deployment options. If Proxy integration will select then each method will be configured with Integration of the HTTP Proxy type

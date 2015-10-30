@@ -190,7 +190,7 @@ public class ApiImporter implements Worker {
     }
 
     private void addCredentialProperty(Api api) {
-        if (!isRequiredAuthentication(api.rootResource)) {
+        if (!isRequiredAuthorization(api.rootResource)) {
             return;
         }
 
@@ -202,14 +202,14 @@ public class ApiImporter implements Worker {
         project.getProperty(customPropertyName).setValue(reader.credential);
     }
 
-    private boolean isRequiredAuthentication(HttpResource source) {
+    private boolean isRequiredAuthorization(HttpResource source) {
         for (HttpMethod method: source.methods) {
             if ("AWS_IAM".equalsIgnoreCase(method.getAuthorizationType())) {
                 return true;
             }
         }
         for (HttpResource child: source.resources) {
-            if (isRequiredAuthentication(child)) {
+            if (isRequiredAuthorization(child)) {
                 return true;
             }
         }
