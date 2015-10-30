@@ -58,10 +58,6 @@ public class AccountInfoDialog implements AutoCloseable {
         this.secretKeyField = dialog.getFormField(Form.SECRET_KEY);
         this.regionField = dialog.getFormField(Form.REGION);
 
-        //TODO: remove before releasing
-        this.accessKeyField.setValue("AKIAJGQ45ZF4SNFMH5XA");
-        this.secretKeyField.setValue("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");
-
         this.accessKeyField.addFormFieldValidator(new FieldValidator("Access key"));
         this.secretKeyField.addFormFieldValidator(new FieldValidator("Secret key"));
         this.regionField.addFormFieldValidator(new FieldValidator("Region"));
