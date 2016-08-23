@@ -33,17 +33,28 @@ public class AccountInfoDialog implements AutoCloseable {
         }
     }
 
+    public static final String US_WEST_OREGON = "US West (Oregon)";
+    public static final String US_EAST_N_VIRGINIA = "US East (N. Virginia)";
+
+    public static final String US_WEST_N_CALIFORNIA = "US West (N. California)";
+    public static final String SOUTH_AMERICA_SAO_PAULO = "South America (Sao Paulo)";
+    public static final String EU_IRELAND = "EU (Ireland)";
+    public static final String EU_FRANKFURT = "EU (Frankfurt)";
+    public static final String ASIA_PACIFIC_TOKYO = "Asia Pacific (Tokyo)";
+    public static final String ASIA_PACIFIC_SINGAPORE = "Asia Pacific (Singapore)";
+    public static final String ASIA_PACIFIC_SYDNEY = "Asia Pacific (Sydney)";
+
     //map of the all available regions, https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/?nc1=h_ls
     private static Map<String, String> regions = new HashMap<String, String>() {{
-        put("US East (N. Virginia)", "us-east-1");
-        put("US West (Oregon)", "us-west-2");
-        put("US West (N. California)", "us-west-1");
-        put("South America (Sao Paulo)", "sa-east-1");
-        put("EU (Ireland)", "eu-west-1");
-        put("EU (Frankfurt)", "eu-central-1");
-        put("Asia Pacific (Tokyo)", "ap-northeast-1");
-        put("Asia Pacific (Singapore)", "ap-southeast-1");
-        put("Asia Pacific (Sydney)", "ap-southeast-2");
+        put(US_EAST_N_VIRGINIA, "us-east-1");
+        put(US_WEST_OREGON, "us-west-2");
+        put(US_WEST_N_CALIFORNIA, "us-west-1");
+        put(SOUTH_AMERICA_SAO_PAULO, "sa-east-1");
+        put(EU_IRELAND, "eu-west-1");
+        put(EU_FRANKFURT, "eu-central-1");
+        put(ASIA_PACIFIC_TOKYO, "ap-northeast-1");
+        put(ASIA_PACIFIC_SINGAPORE, "ap-southeast-1");
+        put(ASIA_PACIFIC_SYDNEY, "ap-southeast-2");
     }};
 
     private final XFormDialog dialog;
@@ -127,7 +138,18 @@ public class AccountInfoDialog implements AutoCloseable {
 
         //see available regions at the http://docs.aws.amazon.com/general/latest/gr/rande.html
         @AField(name = Strings.AccountInfoDialog.REGION_LABEL, description = Strings.AccountInfoDialog.REGION_DESCRIPTION, type = AField.AFieldType.COMBOBOX,
-                values = {"US East (N. Virginia)", "US West (Oregon)", "EU (Ireland)", "Asia Pacific (Tokyo)"}, defaultValue = "US East (N. Virginia)")
+            values = {
+                AccountInfoDialog.US_EAST_N_VIRGINIA,
+                US_WEST_OREGON,
+                US_WEST_N_CALIFORNIA,
+                SOUTH_AMERICA_SAO_PAULO,
+                EU_IRELAND,
+                EU_FRANKFURT,
+                ASIA_PACIFIC_TOKYO,
+                ASIA_PACIFIC_SINGAPORE,
+                ASIA_PACIFIC_SYDNEY},
+            defaultValue = AccountInfoDialog.US_EAST_N_VIRGINIA)
+
         public final static String REGION = Strings.AccountInfoDialog.REGION_LABEL;
     }
 

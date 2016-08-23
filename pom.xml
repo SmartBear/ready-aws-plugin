@@ -5,7 +5,11 @@
     <name>AWS API Gateway Plugin</name>
     <artifactId>ready-aws-plugin</artifactId>
     <groupId>com.smartbear</groupId>
-    <version>1.0</version>
+    <version>1.0.1-SNAPSHOT</version>
+
+    <description>Ready! API Plugin for retrieving APIs from Amazon API Gateway</description>
+    <url>https://github.com/SmartBear/ready-aws-plugin</url>
+
     <repositories>
         <repository>
             <id>eviware</id>
@@ -18,8 +22,6 @@
             <url>http://repo1.maven.org/maven2</url>
         </repository>
     </repositories>
-
-
 
     <dependencies>
         <dependency>
@@ -35,9 +37,25 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
-
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${basedir}/src/main/templates</sourceDirectory>
+                            <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -71,6 +89,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
