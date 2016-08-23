@@ -5,7 +5,7 @@
     <name>AWS API Gateway Plugin</name>
     <artifactId>ready-aws-plugin</artifactId>
     <groupId>com.smartbear</groupId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
 
     <description>Ready! API Plugin for retrieving APIs from Amazon API Gateway</description>
     <url>https://github.com/SmartBear/ready-aws-plugin</url>
