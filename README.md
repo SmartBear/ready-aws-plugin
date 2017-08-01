@@ -2,12 +2,12 @@
 
 ===================
 
-A plugin for Ready! API that allows you to import/export APIs directly from/to an Amazon API Gateway Service.
+A plugin for ReadyAPI that allows you to import/export APIs directly from/to an Amazon API Gateway Service.
 
 Installation
 ------------
 
-Install the plugin via the integrated Plugin Repository available via the Plugin Manager in Ready! API 1.6 and newer
+Install the plugin via the integrated Plugin Repository available via the Plugin Manager in ReadyAPI 1.6 and newer
 
 Build it yourself
 -----------------
@@ -39,8 +39,8 @@ After you specify valid credentials and a region, you will be presented with opt
 
 * send ad-hoc requests to the API to explore its functionality
 * create functional tests of the API which you can further use to create Load Tests, Security Tests and API Monitors
-(in the SoapUI NG module)
-* create a load test of the API (in the LoadUI NG module)
+(in the SoapUI module)
+* create a load test of the API (in the LoadUI module)
 * create a security test of the API (in the Secure module)
 * create a virtualized version of the API for sandboxing/simulation purposes (in the ServiceV module).
 
