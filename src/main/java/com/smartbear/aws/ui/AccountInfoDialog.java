@@ -35,6 +35,7 @@ public class AccountInfoDialog implements AutoCloseable {
 
     public static final String US_WEST_OREGON = "US West (Oregon)";
     public static final String US_EAST_N_VIRGINIA = "US East (N. Virginia)";
+    public static final String US_EAST_OHIO = "US East (Ohio)";
 
     public static final String US_WEST_N_CALIFORNIA = "US West (N. California)";
     public static final String SOUTH_AMERICA_SAO_PAULO = "South America (Sao Paulo)";
@@ -47,6 +48,7 @@ public class AccountInfoDialog implements AutoCloseable {
     //map of the all available regions, https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/?nc1=h_ls
     private static Map<String, String> regions = new HashMap<String, String>() {{
         put(US_EAST_N_VIRGINIA, "us-east-1");
+        put(US_EAST_OHIO, "us-east-2");
         put(US_WEST_OREGON, "us-west-2");
         put(US_WEST_N_CALIFORNIA, "us-west-1");
         put(SOUTH_AMERICA_SAO_PAULO, "sa-east-1");
