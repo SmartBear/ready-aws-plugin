@@ -64,7 +64,7 @@ public class ServiceFactory {
             WsdlTestCase nextTestCase = testSuite.getTestCaseAt(i);
             String name = nextTestCase.getLabel() + " LoadTest";
             name = findNextLoadTestName(testSuite, name);
-            LoadTestModelItem loadUITest = nextTestCase.getProject().addNewLoadUITest(name);
+            LoadTestModelItem loadUITest = nextTestCase.getProject().addNewLoadUITest(name, null);
             loadUITest.getSettings().setString(LoadTestModelItem.SOAPUI_OBJECT_SOURCE_ID, nextTestCase.getId());
             loadUITest.getSettings().setString(LoadTestModelItem.SOAPUI_OBJECT_SOURCE_TYPE, LoadTestModelItem.SOAPUI_OBJECT_SOURCE_TYPE_TESTCASE);
         }
